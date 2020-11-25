@@ -1,7 +1,7 @@
 # Проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ян Клюжин](https://up.htmlacademy.ru/ecmascript/13/user/1658385).
-* Наставник: `Даниил Царёв`.
+* Наставник: [Даниил Царёв](https://htmlacademy.ru/profile/id945835).
 
 ---
 
