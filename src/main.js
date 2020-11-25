@@ -1,7 +1,8 @@
 import {createTripInfoTemplate} from './view/trip-info';
 import {createMenuTemplate} from './view/menu';
 import {createFiltersTemplate} from './view/filters';
-import { createSortTemplate } from './view/sort';
+import {createSortTemplate} from './view/sort';
+import {editPointTemplate} from './view/edit-point';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -25,3 +26,4 @@ tripControlsHeaderElements.forEach((h2, ind) => {
   render(h2, menuAndFilters[ind], `afterend`);
 });
 render(tripEventsHeaderElement, createSortTemplate(), `afterend`);
+render(tripEventsElement, editPointTemplate(), `beforeend`);
