@@ -3,10 +3,13 @@ import {createMenuTemplate} from './view/menu';
 import {createFiltersTemplate} from './view/filters';
 import {createSortTemplate} from './view/sort';
 import {editPointTemplate} from './view/edit-point';
+import {createPointTemplate} from './view/point';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
+
+const POINTS_AMOUNT = 3;
 
 const siteBodyElement = document.querySelector(`.page-body`);
 
@@ -26,4 +29,9 @@ tripControlsHeaderElements.forEach((h2, ind) => {
   render(h2, menuAndFilters[ind], `afterend`);
 });
 render(tripEventsHeaderElement, createSortTemplate(), `afterend`);
-render(tripEventsElement, editPointTemplate(), `beforeend`);
+
+const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
+render(pointsListElement, editPointTemplate(), `beforeend`);
+for (let i = 0; i < POINTS_AMOUNT; i++) {
+  render(pointsListElement, createPointTemplate(), `beforeend`);
+}
