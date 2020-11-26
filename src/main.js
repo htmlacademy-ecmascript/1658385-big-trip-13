@@ -1,4 +1,5 @@
-import {createTripInfoTemplate} from './view/trip-info';
+import {createTripInfoMainTemplate} from './view/trip-info-main';
+import {createTripInfoCostTemplate} from './view/trip-info-cost';
 import {createMenuTemplate} from './view/menu';
 import {createFiltersTemplate} from './view/filters';
 import {createSortTemplate} from './view/sort';
@@ -15,6 +16,7 @@ const siteBodyElement = document.querySelector(`.page-body`);
 
 const siteHeaderElement = siteBodyElement.querySelector(`.page-header`);
 const tripMainElement = siteHeaderElement.querySelector(`.trip-main`);
+const tripInfoElement = tripMainElement.querySelector(`.trip-info`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const tripControlsHeaderElements = tripControlsElement.querySelectorAll(`h2`);
 
@@ -24,7 +26,8 @@ const tripEventsElement = siteMainElement.querySelector(`.trip-events`);
 const tripEventsHeaderElement = tripEventsElement.querySelector(`h2`);
 
 const menuAndFilters = [createMenuTemplate(), createFiltersTemplate()];
-render(tripMainElement, createTripInfoTemplate(), `afterbegin`);
+render(tripInfoElement, createTripInfoMainTemplate(), `beforeend`);
+render(tripInfoElement, createTripInfoCostTemplate(), `beforeend`);
 tripControlsHeaderElements.forEach((h2, ind) => {
   render(h2, menuAndFilters[ind], `afterend`);
 });
