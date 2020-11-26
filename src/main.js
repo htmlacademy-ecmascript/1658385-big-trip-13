@@ -18,19 +18,18 @@ const siteHeaderElement = siteBodyElement.querySelector(`.page-header`);
 const tripMainElement = siteHeaderElement.querySelector(`.trip-main`);
 const tripInfoElement = tripMainElement.querySelector(`.trip-info`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
-const tripControlsHeaderElements = tripControlsElement.querySelectorAll(`h2`);
+const menuContainerElement = tripControlsElement.querySelector(`.menu-container`);
+const filtersContainerElement = tripControlsElement.querySelector(`.filters-container`);
 
 const siteMainElement = siteBodyElement.querySelector(`.page-main`);
 
 const tripEventsElement = siteMainElement.querySelector(`.trip-events`);
 const tripEventsHeaderElement = tripEventsElement.querySelector(`h2`);
 
-const menuAndFilters = [createMenuTemplate(), createFiltersTemplate()];
 render(tripInfoElement, createTripInfoMainTemplate(), `beforeend`);
 render(tripInfoElement, createTripInfoCostTemplate(), `beforeend`);
-tripControlsHeaderElements.forEach((h2, ind) => {
-  render(h2, menuAndFilters[ind], `afterend`);
-});
+render(menuContainerElement, createMenuTemplate(), `beforeend`);
+render(filtersContainerElement, createFiltersTemplate(), `beforeend`);
 render(tripEventsHeaderElement, createSortTemplate(), `afterend`);
 
 const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
