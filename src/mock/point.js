@@ -1,0 +1,175 @@
+import dayjs from 'dayjs';
+
+
+const getSample = (arr, amount) => {
+  if (!amount) {
+    const len = arr === null ? 0 : arr.length;
+    return len ? arr[Math.floor(Math.random() * len)] : undefined;
+  } else {
+    const entitiesToChoose = arr.slice();
+    const chosenEntities = [];
+    for (let index = 0; index < amount; index++) {
+      const chosenEntity = getSample(entitiesToChoose);
+      entitiesToChoose.filter((offer) => offer.name !== chosenEntity.name);
+      chosenEntities.push(chosenEntity);
+    }
+    return chosenEntities;
+  }
+};
+
+
+const getRandomInt = (a = 1, b = 0) => {
+  const lower = Math.ceil(Math.min(a, b));
+  const upper = Math.floor(Math.max(a, b));
+  return Math.floor(lower + Math.random() * (upper - lower + 1));
+};
+
+const START_DATE = dayjs().add(getRandomInt(30), `days`);
+const DURATION_IN_DAYS = 3;
+
+const OFFERS = [
+  {
+    type: `Taxi`,
+    offerName: `Order Uber`,
+    price: 20
+  },
+  {
+    type: `Flight`,
+    offerName: `Add luggage`,
+    price: 50
+  },
+  {
+    type: `Flight`,
+    offerName: `Switch to comfort`,
+    price: 80
+  },
+  {
+    type: `Flight`,
+    offerName: `Add meal`,
+    price: 15
+  },
+  {
+    type: `Flight`,
+    offerName: `Choose seats`,
+    price: 5
+  },
+  {
+    type: `Flight`,
+    offerName: `Travel by train`,
+    price: 40
+  },
+  {
+    type: `Drive`,
+    offerName: `Rent a car`,
+    price: 200
+  },
+  {
+    type: `Check-in`,
+    offerName: `Add breakfast`,
+    price: 50
+  },
+  {
+    type: `Sightseeing`,
+    offerName: `Book tickets`,
+    price: 40
+  },
+  {
+    type: `Sightseeing`,
+    offerName: `Lunch in city`,
+    price: 30
+  }
+];
+
+const generateType = () => {
+  const TYPES = [
+    `Taxi`,
+    `Bus`,
+    `Train`,
+    `Ship`,
+    `Transport`,
+    `Drive`,
+    `Flight`,
+    `Check-in`,
+    `Sightseeing`,
+    `Restaurant`,
+  ];
+
+  return getSample(TYPES);
+};
+
+const prices = {
+  "Taxi": 20,
+  "Bus": 50,
+  "Train": 100,
+  "Ship": 200,
+  "Transport": 30,
+  "Drive": 160,
+  "Flight": 160,
+  'Check-in': 600,
+  "Sightseeing": 50,
+  "Restaurant": 70,
+};
+
+const generateDestination = () => {
+  const DESTINATIONS = [
+    `Amsterdam`,
+    `Chamonix`,
+    `Geneva`
+  ];
+
+  return getSample(DESTINATIONS);
+};
+
+const generateOffers = (type) => {
+  const offersToChoose = OFFERS.slice().filter((offer) => offer.type === type);
+  const amountToChoose = getRandomInt(0, offersToChoose.length);
+  const chosenOffers = getSample(offersToChoose, amountToChoose);
+
+  return chosenOffers;
+};
+
+const generateDescription = () => {
+  const TEXT_TEMPLATE = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
+
+  const sentencesToChoose = TEXT_TEMPLATE.split(`. `);
+  const sentencesAmountToChoose = getRandomInt(1, 5);
+  const chosenSentences = getSample(sentencesToChoose, sentencesAmountToChoose);
+  const text = chosenSentences.join(`. `);
+
+  const PHOTO_SOURCE = `http://picsum.photos/248/152?r=`;
+
+  const photoAmountToChoose = getRandomInt(1, 5);
+  const photos = new Array(photoAmountToChoose).fill(photoAmountToChoose).map(() => `${PHOTO_SOURCE}${Math.floor(Math.random() * 1000)}`);
+
+  return {
+    text,
+    photos
+  };
+};
+
+const generateDate = (tripStartDate, durationOfTripInDays) => {
+  const start = tripStartDate.add(getRandomInt(durationOfTripInDays * 24), `hour`).minute(0);
+  const durationInMinutes = getRandomInt(1, durationOfTripInDays * 24 * 6) * 10;
+  const end = start.add(durationInMinutes, `minute`);
+  return {
+    start,
+    end
+  };
+};
+
+export const generatePoint = () => {
+  const type = generateType();
+  const price = prices[type];
+  const destination = generateDestination();
+  const offers = generateOffers(type);
+  const description = generateDescription();
+  const dates = generateDate(START_DATE, DURATION_IN_DAYS);
+  return {
+    type,
+    price,
+    destination,
+    offers,
+    description,
+    dates
+  };
+};
