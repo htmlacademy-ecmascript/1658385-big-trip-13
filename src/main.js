@@ -5,8 +5,11 @@ import {createFiltersTemplate} from './view/filters';
 import {createSortingTemplate} from './view/sorting';
 import {createEditPointTemplate} from './view/point-editor';
 import {createPointTemplate} from './view/point';
+import {generatePoint} from './mock/point';
 
-const POINTS_AMOUNT = 3;
+const POINTS_AMOUNT = 30;
+
+const points = new Array(POINTS_AMOUNT).fill().map(generatePoint);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -38,5 +41,5 @@ render(tripEventsHeaderElement, createSortingTemplate(), `afterend`);
 
 render(pointsListElement, createEditPointTemplate(), `beforeend`);
 for (let i = 0; i < POINTS_AMOUNT; i++) {
-  render(pointsListElement, createPointTemplate(), `beforeend`);
+  render(pointsListElement, createPointTemplate(points[i]), `beforeend`);
 }
