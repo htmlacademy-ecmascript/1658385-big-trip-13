@@ -1,16 +1,21 @@
 import dayjs from 'dayjs';
 
-
 const getSample = (arr, amount) => {
   if (!amount) {
     const len = arr === null ? 0 : arr.length;
-    return len ? arr[Math.floor(Math.random() * len)] : undefined;
+    if (len) {
+      const randomIndex = Math.floor(Math.random() * len);
+      const element = arr[randomIndex];
+      arr.splice(randomIndex, 1);
+      return element;
+    } else {
+      return undefined;
+    }
   } else {
     const entitiesToChoose = arr.slice();
     const chosenEntities = [];
     for (let index = 0; index < amount; index++) {
       const chosenEntity = getSample(entitiesToChoose);
-      entitiesToChoose.filter((offer) => offer.name !== chosenEntity.name);
       chosenEntities.push(chosenEntity);
     }
     return chosenEntities;
@@ -30,52 +35,52 @@ const DURATION_IN_DAYS = 3;
 const OFFERS = [
   {
     type: `Taxi`,
-    offerName: `Order Uber`,
+    name: `Order Uber`,
     price: 20
   },
   {
     type: `Flight`,
-    offerName: `Add luggage`,
+    name: `Add luggage`,
     price: 50
   },
   {
     type: `Flight`,
-    offerName: `Switch to comfort`,
-    price: 80
+    name: `Switch to comfort`,
+    price: 100
   },
   {
     type: `Flight`,
-    offerName: `Add meal`,
+    name: `Add meal`,
     price: 15
   },
   {
     type: `Flight`,
-    offerName: `Choose seats`,
+    name: `Choose seats`,
     price: 5
   },
   {
     type: `Flight`,
-    offerName: `Travel by train`,
+    name: `Travel by train`,
     price: 40
   },
   {
     type: `Drive`,
-    offerName: `Rent a car`,
+    name: `Rent a car`,
     price: 200
   },
   {
     type: `Check-in`,
-    offerName: `Add breakfast`,
+    name: `Add breakfast`,
     price: 50
   },
   {
     type: `Sightseeing`,
-    offerName: `Book tickets`,
+    name: `Book tickets`,
     price: 40
   },
   {
     type: `Sightseeing`,
-    offerName: `Lunch in city`,
+    name: `Lunch in city`,
     price: 30
   }
 ];
@@ -123,7 +128,7 @@ const generateDestination = () => {
 const generateOffers = (type) => {
   const offersToChoose = OFFERS.slice().filter((offer) => offer.type === type);
   const amountToChoose = getRandomInt(0, offersToChoose.length);
-  const chosenOffers = getSample(offersToChoose, amountToChoose);
+  const chosenOffers = amountToChoose ? getSample(offersToChoose, amountToChoose) : [];
 
   return chosenOffers;
 };
@@ -147,7 +152,7 @@ const generateDescription = () => {
   };
 };
 
-const generateDate = (tripStartDate, durationOfTripInDays) => {
+const generateTime = (tripStartDate, durationOfTripInDays) => {
   const start = tripStartDate.add(getRandomInt(durationOfTripInDays * 24), `hour`).minute(0);
   const durationInMinutes = getRandomInt(1, durationOfTripInDays * 24 * 6) * 10;
   const end = start.add(durationInMinutes, `minute`);
@@ -163,13 +168,14 @@ export const generatePoint = () => {
   const destination = generateDestination();
   const offers = generateOffers(type);
   const description = generateDescription();
-  const dates = generateDate(START_DATE, DURATION_IN_DAYS);
+  const times = generateTime(START_DATE, DURATION_IN_DAYS);
   return {
     type,
     price,
     destination,
     offers,
     description,
-    dates
+    times,
+    isFavorite: Boolean(getRandomInt(0, 1))
   };
 };
