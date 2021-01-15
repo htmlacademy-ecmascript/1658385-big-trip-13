@@ -65,8 +65,8 @@ export const createEditPointTemplate = (point = {}) => {
             <div class="event__available-offers">
               ${availableOffers.map((offer) => `
                 <div class="event__offer-selector">
-                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${offers.map((o) => o.name).includes(offer.name) ? `checked` : ``}>
-                  <label class="event__offer-label" for="event-offer-luggage-1">
+                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.name.toLowerCase().split(` `).join(`-`)}-1" type="checkbox" name="event-offer-${offer.name.split(` `).join(`-`)}" ${offers.map((o) => o.name).includes(offer.name) ? `checked` : ``}>
+                  <label class="event__offer-label" for="event-offer-${offer.name.split(` `).join(`-`)}-1">
                     <span class="event__offer-title">${offer.name}</span>
                     &plus;&euro;&nbsp;
                     <span class="event__offer-price">${offer.price}</span>
