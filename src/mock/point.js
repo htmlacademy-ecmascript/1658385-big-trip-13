@@ -22,7 +22,6 @@ const getSample = (arr, amount) => {
   }
 };
 
-
 const getRandomInt = (a = 1, b = 0) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -32,7 +31,7 @@ const getRandomInt = (a = 1, b = 0) => {
 const START_DATE = dayjs().add(getRandomInt(30), `days`);
 const DURATION_IN_DAYS = 3;
 
-const OFFERS = [
+export const OFFERS = [
   {
     type: `Taxi`,
     name: `Order Uber`,
@@ -85,22 +84,20 @@ const OFFERS = [
   }
 ];
 
-const generateType = () => {
-  const TYPES = [
-    `Taxi`,
-    `Bus`,
-    `Train`,
-    `Ship`,
-    `Transport`,
-    `Drive`,
-    `Flight`,
-    `Check-in`,
-    `Sightseeing`,
-    `Restaurant`,
-  ];
+export const TYPES = [
+  `Taxi`,
+  `Bus`,
+  `Train`,
+  `Ship`,
+  `Transport`,
+  `Drive`,
+  `Flight`,
+  `Check-in`,
+  `Sightseeing`,
+  `Restaurant`,
+];
 
-  return getSample(TYPES);
-};
+const generateType = () => getSample(TYPES.slice());
 
 const prices = {
   "Taxi": 20,
@@ -115,15 +112,13 @@ const prices = {
   "Restaurant": 70,
 };
 
-const generateDestination = () => {
-  const DESTINATIONS = [
-    `Amsterdam`,
-    `Chamonix`,
-    `Geneva`
-  ];
+export const DESTINATIONS = [
+  `Amsterdam`,
+  `Chamonix`,
+  `Geneva`
+];
 
-  return getSample(DESTINATIONS);
-};
+const generateDestination = () => getSample(DESTINATIONS.slice());
 
 const generateOffers = (type) => {
   const offersToChoose = OFFERS.slice().filter((offer) => offer.type === type);

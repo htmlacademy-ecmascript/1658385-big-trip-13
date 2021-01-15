@@ -26,7 +26,6 @@ const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const menuContainerElement = tripControlsElement.querySelector(`.menu-container`);
 const filtersContainerElement = tripControlsElement.querySelector(`.filters-container`);
 
-
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 const tripEventsHeaderElement = tripEventsElement.querySelector(`h2`);
 const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
@@ -39,7 +38,7 @@ render(filtersContainerElement, createFiltersTemplate(), `beforeend`);
 
 render(tripEventsHeaderElement, createSortingTemplate(), `afterend`);
 
-render(pointsListElement, createEditPointTemplate(), `beforeend`);
-for (let i = 0; i < POINTS_AMOUNT; i++) {
+render(pointsListElement, createEditPointTemplate(points[0]), `beforeend`);
+for (let i = 1; i < POINTS_AMOUNT; i++) {
   render(pointsListElement, createPointTemplate(points[i]), `beforeend`);
 }
