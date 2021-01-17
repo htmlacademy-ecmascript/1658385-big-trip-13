@@ -5,8 +5,12 @@ import {createFiltersTemplate} from './view/filters';
 import {createSortingTemplate} from './view/sorting';
 import {createEditPointTemplate} from './view/point-editor';
 import {createPointTemplate} from './view/point';
+import {generatePoint} from './mock/point';
+import {getRoute, getDates, calcCost} from './utils';
 
-const POINTS_AMOUNT = 3;
+const POINTS_AMOUNT = 30;
+
+const points = new Array(POINTS_AMOUNT).fill().map(generatePoint);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -23,20 +27,23 @@ const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const menuContainerElement = tripControlsElement.querySelector(`.menu-container`);
 const filtersContainerElement = tripControlsElement.querySelector(`.filters-container`);
 
-
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 const tripEventsHeaderElement = tripEventsElement.querySelector(`h2`);
 const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
-render(tripInfoElement, createTripInfoMainTemplate(), `beforeend`);
-render(tripInfoElement, createTripInfoCostTemplate(), `beforeend`);
+const route = getRoute(points);
+const dates = getDates(points);
+render(tripInfoElement, createTripInfoMainTemplate(route, dates), `beforeend`);
+
+const cost = calcCost(points);
+render(tripInfoElement, createTripInfoCostTemplate(cost), `beforeend`);
 
 render(menuContainerElement, createMenuTemplate(), `beforeend`);
 render(filtersContainerElement, createFiltersTemplate(), `beforeend`);
 
 render(tripEventsHeaderElement, createSortingTemplate(), `afterend`);
 
-render(pointsListElement, createEditPointTemplate(), `beforeend`);
-for (let i = 0; i < POINTS_AMOUNT; i++) {
-  render(pointsListElement, createPointTemplate(), `beforeend`);
+render(pointsListElement, createEditPointTemplate(points[0]), `beforeend`);
+for (let i = 1; i < POINTS_AMOUNT; i++) {
+  render(pointsListElement, createPointTemplate(points[i]), `beforeend`);
 }
