@@ -6,7 +6,7 @@ import {createSortingTemplate} from './view/sorting';
 import {createEditPointTemplate} from './view/point-editor';
 import {createPointTemplate} from './view/point';
 import {generatePoint} from './mock/point';
-import {getRoute, getDates} from './utils';
+import {getRoute, getDates, calcCost} from './utils';
 
 const POINTS_AMOUNT = 30;
 
@@ -33,9 +33,10 @@ const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 const route = getRoute(points);
 const dates = getDates(points);
-
 render(tripInfoElement, createTripInfoMainTemplate(route, dates), `beforeend`);
-render(tripInfoElement, createTripInfoCostTemplate(), `beforeend`);
+
+const cost = calcCost(points);
+render(tripInfoElement, createTripInfoCostTemplate(cost), `beforeend`);
 
 render(menuContainerElement, createMenuTemplate(), `beforeend`);
 render(filtersContainerElement, createFiltersTemplate(), `beforeend`);

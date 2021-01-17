@@ -53,3 +53,15 @@ export const getDates = (points) => {
     return `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.format(`MMM D`).toUpperCase()}`;
   }
 };
+
+export const calcCost = (points) => {
+  let cost = 0;
+  points.forEach((point) => {
+    cost += point.price;
+    point.offers.forEach((offer) => {
+      cost += offer.price;
+    });
+  });
+
+  return cost;
+};
