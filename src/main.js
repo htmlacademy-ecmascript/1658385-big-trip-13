@@ -6,6 +6,7 @@ import {createSortingTemplate} from './view/sorting';
 import {createEditPointTemplate} from './view/point-editor';
 import {createPointTemplate} from './view/point';
 import {generatePoint} from './mock/point';
+import {renderElement, RenderPosition} from './utils';
 
 export const getTripRoute = (points) => {
   const destinations = [];
