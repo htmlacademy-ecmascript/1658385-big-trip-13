@@ -1,5 +1,6 @@
 import MenuView from './view/menu';
 import FiltersView from './view/filters';
+import EditPointView from './view/point-editor';
 import {generatePoint} from './mock/point';
 import {renderElement, RenderPosition} from './utils';
 
@@ -80,7 +81,7 @@ renderElement(filtersContainerElement, new FiltersView().getElement(), RenderPos
 
 render(tripEventsHeaderElement, createSortingTemplate(), `afterend`);
 
-render(pointsListElement, createEditPointTemplate(points[0]), `beforeend`);
+renderElement(pointsListElement, new EditPointView(points[0]).getElement(), RenderPosition.BEFOREEND);
 for (let i = 1; i < POINTS_AMOUNT; i++) {
   render(pointsListElement, createPointTemplate(points[i]), `beforeend`);
 }

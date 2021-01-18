@@ -1,6 +1,7 @@
 import {OFFERS, TYPES, DESTINATIONS} from '../mock/point';
+import {createElement} from '../utils';
 
-export const createEditPointTemplate = (point = {}) => {
+const createEditPointTemplate = (point = {}) => {
   const {type, destination, times, price, offers, description} = point;
   const availableOffers = OFFERS.slice().filter((offer) => offer.type === type);
   return `
@@ -93,3 +94,26 @@ export const createEditPointTemplate = (point = {}) => {
     </li>
   `;
 };
+
+export default class EditPointView {
+  constructor(point) {
+    this._element = null;
+    this._point = point;
+  }
+
+  getTemplate() {
+    return createEditPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
