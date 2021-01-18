@@ -1,5 +1,6 @@
 import MenuView from './view/menu';
 import FiltersView from './view/filters';
+import SortingView from './view/sorting';
 import EditPointView from './view/point-editor';
 import PointView from './view/point';
 import {generatePoint} from './mock/point';
@@ -80,7 +81,7 @@ render(tripInfoElement, createTripInfoCostTemplate(cost), `beforeend`);
 renderElement(menuContainerElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
 renderElement(filtersContainerElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 
-render(tripEventsHeaderElement, createSortingTemplate(), `afterend`);
+renderElement(tripEventsHeaderElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
 
 renderElement(pointsListElement, new EditPointView(points[0]).getElement(), RenderPosition.BEFOREEND);
 for (let i = 1; i < POINTS_AMOUNT; i++) {
