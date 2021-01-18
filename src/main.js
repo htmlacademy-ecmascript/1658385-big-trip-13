@@ -6,7 +6,48 @@ import {createSortingTemplate} from './view/sorting';
 import {createEditPointTemplate} from './view/point-editor';
 import {createPointTemplate} from './view/point';
 import {generatePoint} from './mock/point';
-import {getRoute, getDates, calcCost} from './utils';
+
+export const getTripRoute = (points) => {
+  const destinations = [];
+  points.forEach((point) => {
+    const lastDestination = destinations.slice(-1)[0];
+    if (point.destination !== lastDestination) {
+      destinations.push(point.destination);
+    }
+  });
+
+  return destinations.join(` &mdash; `);
+};
+
+export const getTripDates = (points) => {
+  let {start, end} = points[0].times;
+  points.forEach((point) => {
+    if (point.times.start.diff(start) < 0) {
+      start = point.times.start;
+    }
+    if (point.times.end.diff(end) > 0) {
+      end = point.times.end;
+    }
+  });
+
+  if (start.month() === end.month()) {
+    return `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.date()}`;
+  } else {
+    return `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.format(`MMM D`).toUpperCase()}`;
+  }
+};
+
+export const calcTripCost = (points) => {
+  let cost = 0;
+  points.forEach((point) => {
+    cost += point.price;
+    point.offers.forEach((offer) => {
+      cost += offer.price;
+    });
+  });
+
+  return cost;
+};
 
 const POINTS_AMOUNT = 30;
 
@@ -31,11 +72,11 @@ const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 const tripEventsHeaderElement = tripEventsElement.querySelector(`h2`);
 const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
-const route = getRoute(points);
-const dates = getDates(points);
+const route = getTripRoute(points);
+const dates = getTripDates(points);
 render(tripInfoElement, createTripInfoMainTemplate(route, dates), `beforeend`);
 
-const cost = calcCost(points);
+const cost = calcTripCost(points);
 render(tripInfoElement, createTripInfoCostTemplate(cost), `beforeend`);
 
 render(menuContainerElement, createMenuTemplate(), `beforeend`);
