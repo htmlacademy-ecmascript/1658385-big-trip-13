@@ -6,7 +6,7 @@ import SortingView from './view/sorting';
 import EditPointView from './view/point-editor';
 import PointView from './view/point';
 import {generatePoint} from './mock/point';
-import {renderElement, RenderPosition} from './utils';
+import {render, RenderPosition} from './utils';
 
 export const getTripRoute = (points) => {
   const destinations = [];
@@ -54,10 +54,6 @@ const POINTS_AMOUNT = 30;
 
 const points = new Array(POINTS_AMOUNT).fill().map(generatePoint);
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 const pageBodyElement = document.querySelector(`.page-body`);
 const pageHeaderElement = pageBodyElement.querySelector(`.page-header`);
 const pageMainElement = pageBodyElement.querySelector(`.page-main`);
@@ -75,17 +71,17 @@ const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 const route = getTripRoute(points);
 const dates = getTripDates(points);
-renderElement(tripInfoElement, new TripInfoMainView(route, dates).getElement(), RenderPosition.BEFOREEND);
+render(tripInfoElement, new TripInfoMainView(route, dates).getElement(), RenderPosition.BEFOREEND);
 
 const cost = calcTripCost(points);
-renderElement(tripInfoElement, new TripInfoCostView(cost).getElement(), RenderPosition.BEFOREEND);
+render(tripInfoElement, new TripInfoCostView(cost).getElement(), RenderPosition.BEFOREEND);
 
-renderElement(menuContainerElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
-renderElement(filtersContainerElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
+render(menuContainerElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
+render(filtersContainerElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 
-renderElement(tripEventsHeaderElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+render(tripEventsHeaderElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
 
-renderElement(pointsListElement, new EditPointView(points[0]).getElement(), RenderPosition.BEFOREEND);
+render(pointsListElement, new EditPointView(points[0]).getElement(), RenderPosition.BEFOREEND);
 for (let i = 1; i < POINTS_AMOUNT; i++) {
-  renderElement(pointsListElement, new PointView(points[i]).getElement(), RenderPosition.BEFOREEND);
+  render(pointsListElement, new PointView(points[i]).getElement(), RenderPosition.BEFOREEND);
 }
