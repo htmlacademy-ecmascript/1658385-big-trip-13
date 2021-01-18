@@ -1,3 +1,4 @@
+import MenuView from './view/menu';
 import FiltersView from './view/filters';
 import {generatePoint} from './mock/point';
 import {renderElement, RenderPosition} from './utils';
@@ -74,6 +75,7 @@ render(tripInfoElement, createTripInfoMainTemplate(route, dates), `beforeend`);
 const cost = calcTripCost(points);
 render(tripInfoElement, createTripInfoCostTemplate(cost), `beforeend`);
 
+renderElement(menuContainerElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
 renderElement(filtersContainerElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 
 render(tripEventsHeaderElement, createSortingTemplate(), `afterend`);
