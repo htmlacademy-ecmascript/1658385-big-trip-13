@@ -50,6 +50,31 @@ export const calcTripCost = (points) => {
   return cost;
 };
 
+const renderPoint = (container, point) => {
+  const pointComponent = new PointView(point);
+  const editPointComponent = new EditPointView(point);
+
+  const replacePointToForm = () => {
+    container.replaceChild(editPointComponent.getElement(), pointComponent.getElement());
+  };
+
+  const replaceFormToPoint = () => {
+    container.replaceChild(pointComponent.getElement(), editPointComponent.getElement());
+  };
+
+  pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+    replacePointToForm();
+  });
+
+  editPointComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+  });
+
+  render(container, pointComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
 const POINTS_AMOUNT = 30;
 
 const points = new Array(POINTS_AMOUNT).fill().map(generatePoint);
