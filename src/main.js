@@ -1,3 +1,5 @@
+import TripInfoMainView from './view/trip-info-main';
+import TripInfoCostView from './view/trip-info-cost';
 import MenuView from './view/menu';
 import FiltersView from './view/filters';
 import SortingView from './view/sorting';
@@ -73,10 +75,10 @@ const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 const route = getTripRoute(points);
 const dates = getTripDates(points);
-render(tripInfoElement, createTripInfoMainTemplate(route, dates), `beforeend`);
+renderElement(tripInfoElement, new TripInfoMainView(route, dates).getElement(), RenderPosition.BEFOREEND);
 
 const cost = calcTripCost(points);
-render(tripInfoElement, createTripInfoCostTemplate(cost), `beforeend`);
+renderElement(tripInfoElement, new TripInfoCostView(cost).getElement(), RenderPosition.BEFOREEND);
 
 renderElement(menuContainerElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
 renderElement(filtersContainerElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
