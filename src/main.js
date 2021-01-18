@@ -81,7 +81,6 @@ render(filtersContainerElement, new FiltersView().getElement(), RenderPosition.B
 
 render(tripEventsHeaderElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
 
-render(pointsListElement, new EditPointView(points[0]).getElement(), RenderPosition.BEFOREEND);
-for (let i = 1; i < POINTS_AMOUNT; i++) {
-  render(pointsListElement, new PointView(points[i]).getElement(), RenderPosition.BEFOREEND);
+for (let i = 0; i < POINTS_AMOUNT; i++) {
+  renderPoint(pointsListElement, points[i], RenderPosition.BEFOREEND);
 }
