@@ -212,7 +212,7 @@ const renderPoint = (container, point) => {
   Object(_utils__WEBPACK_IMPORTED_MODULE_9__["render"])(container, pointComponent.getElement(), _utils__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].BEFOREEND);
 };
 
-const POINTS_AMOUNT = 0;
+const POINTS_AMOUNT = 30;
 
 const points = new Array(POINTS_AMOUNT).fill().map(_mock_point__WEBPACK_IMPORTED_MODULE_8__["generatePoint"]);
 
