@@ -31,23 +31,15 @@ export const getTripDates = (points) => {
     }
   });
 
-  if (start.month() === end.month()) {
-    return `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.date()}`;
-  } else {
-    return `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.format(`MMM D`).toUpperCase()}`;
-  }
+  return start.month() === end.month()
+    ? `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.date()}`
+    : `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.format(`MMM D`).toUpperCase()}`;
 };
 
 export const calcTripCost = (points) => {
-  let cost = 0;
-  points.forEach((point) => {
-    cost += point.price;
-    point.offers.forEach((offer) => {
-      cost += offer.price;
-    });
-  });
-
-  return cost;
+  return points.reduce((sum, point) => {
+    return sum + point.price + point.offers.reduce((oSum, offer) => oSum + offer.price, 0);
+  }, 0);
 };
 
 const renderPoint = (container, point) => {
