@@ -54,14 +54,32 @@ const renderPoint = (container, point) => {
     container.replaceChild(pointComponent.getElement(), editPointComponent.getElement());
   };
 
+  const keyDownHandler = (evt) => {
+    if (evt.key === `Esc` || evt.key === `Escape`) {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener(`keydown`, keyDownHandler);
+    }
+  };
+
   pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
     evt.preventDefault();
+    document.addEventListener(`keydown`, keyDownHandler);
     replacePointToForm();
   });
 
-  editPointComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
+  const formElement = editPointComponent.getElement().querySelector(`form`)
+
+  formElement.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    document.removeEventListener(`keydown`, keyDownHandler);
+    replaceFormToPoint();
+  });
+
+  formElement.querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
     evt.preventDefault();
     replaceFormToPoint();
+    document.removeEventListener(`keydown`, keyDownHandler);
   });
 
   render(container, pointComponent.getElement(), RenderPosition.BEFOREEND);
