@@ -90,7 +90,7 @@ const renderPoint = (container, point) => {
   render(container, pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-const POINTS_AMOUNT = 0;
+const POINTS_AMOUNT = 30;
 
 const points = new Array(POINTS_AMOUNT).fill().map(generatePoint);
 
