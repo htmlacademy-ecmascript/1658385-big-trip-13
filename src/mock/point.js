@@ -1,24 +1,19 @@
 import dayjs from 'dayjs';
 
-const getSample = (arr, amount) => {
-  if (!amount) {
-    const len = arr === null ? 0 : arr.length;
-    if (len) {
-      const randomIndex = Math.floor(Math.random() * len);
-      const element = arr[randomIndex];
-      arr.splice(randomIndex, 1);
-      return element;
-    } else {
-      return undefined;
-    }
-  } else {
+const getRandomItemsFromArray = (arr, amount) => {
+  if (amount > 0) {
     const entitiesToChoose = arr.slice();
     const chosenEntities = [];
     for (let index = 0; index < amount; index++) {
-      const chosenEntity = getSample(entitiesToChoose);
+      const chosenEntity = getRandomItemsFromArray(entitiesToChoose);
       chosenEntities.push(chosenEntity);
     }
     return chosenEntities;
+  } else {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    const element = arr[randomIndex];
+    arr.splice(randomIndex, 1);
+    return element;
   }
 };
 
@@ -97,7 +92,7 @@ export const TYPES = [
   `Restaurant`,
 ];
 
-const generateType = () => getSample(TYPES.slice());
+const generateType = () => getRandomItemsFromArray(TYPES.slice());
 
 const prices = {
   "Taxi": 20,
@@ -118,12 +113,12 @@ export const DESTINATIONS = [
   `Geneva`
 ];
 
-const generateDestination = () => getSample(DESTINATIONS.slice());
+const generateDestination = () => getRandomItemsFromArray(DESTINATIONS.slice());
 
 const generateOffers = (type) => {
   const offersToChoose = OFFERS.slice().filter((offer) => offer.type === type);
   const amountToChoose = getRandomInt(0, offersToChoose.length);
-  const chosenOffers = amountToChoose ? getSample(offersToChoose, amountToChoose) : [];
+  const chosenOffers = amountToChoose ? getRandomItemsFromArray(offersToChoose, amountToChoose) : [];
 
   return chosenOffers;
 };
@@ -133,7 +128,7 @@ const generateDescription = () => {
 
   const sentencesToChoose = TEXT_TEMPLATE.split(`. `);
   const sentencesAmountToChoose = getRandomInt(1, 5);
-  const chosenSentences = getSample(sentencesToChoose, sentencesAmountToChoose);
+  const chosenSentences = getRandomItemsFromArray(sentencesToChoose, sentencesAmountToChoose);
   const text = chosenSentences.join(`. `);
 
   const PHOTO_SOURCE = `http://picsum.photos/248/152?r=`;

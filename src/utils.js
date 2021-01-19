@@ -24,44 +24,25 @@ export const getDuration = (start, end) => {
   return duration;
 };
 
-export const getRoute = (points) => {
-  const destinations = [];
-  points.forEach((point) => {
-    const lastDestination = destinations.slice(-1)[0];
-    if (point.destination !== lastDestination) {
-      destinations.push(point.destination);
-    }
-  });
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
 
-  return destinations.join(` &mdash; `);
+  return newElement.firstElementChild;
 };
 
-export const getDates = (points) => {
-  let {start, end} = points[0].times;
-  points.forEach((point) => {
-    if (point.times.start.diff(start) < 0) {
-      start = point.times.start;
-    }
-    if (point.times.end.diff(end) > 0) {
-      end = point.times.end;
-    }
-  });
+export const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
 
-  if (start.month() === end.month()) {
-    return `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.date()}`;
-  } else {
-    return `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.format(`MMM D`).toUpperCase()}`;
+export const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
   }
-};
-
-export const calcCost = (points) => {
-  let cost = 0;
-  points.forEach((point) => {
-    cost += point.price;
-    point.offers.forEach((offer) => {
-      cost += offer.price;
-    });
-  });
-
-  return cost;
 };
