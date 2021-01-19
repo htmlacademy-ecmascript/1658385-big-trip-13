@@ -5,6 +5,7 @@ import FiltersView from './view/filters';
 import SortingView from './view/sorting';
 import EditPointView from './view/point-editor';
 import PointView from './view/point';
+import NoPointsView from './view/no-points';
 import {generatePoint} from './mock/point';
 import {render, RenderPosition} from './utils';
 
@@ -21,6 +22,10 @@ export const getTripRoute = (points) => {
 };
 
 export const getTripDates = (points) => {
+  if (!points.length) {
+    return ``;
+  }
+
   let {start, end} = points[0].times;
   points.forEach((point) => {
     if (point.times.start.diff(start) < 0) {
@@ -68,7 +73,7 @@ const renderPoint = (container, point) => {
     replacePointToForm();
   });
 
-  const formElement = editPointComponent.getElement().querySelector(`form`)
+  const formElement = editPointComponent.getElement().querySelector(`form`);
 
   formElement.addEventListener(`submit`, (evt) => {
     evt.preventDefault();
@@ -85,7 +90,7 @@ const renderPoint = (container, point) => {
   render(container, pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-const POINTS_AMOUNT = 30;
+const POINTS_AMOUNT = 0;
 
 const points = new Array(POINTS_AMOUNT).fill().map(generatePoint);
 
@@ -116,6 +121,11 @@ render(filtersContainerElement, new FiltersView().getElement(), RenderPosition.B
 
 render(tripEventsHeaderElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
 
-for (let i = 0; i < POINTS_AMOUNT; i++) {
-  renderPoint(pointsListElement, points[i], RenderPosition.BEFOREEND);
+if (POINTS_AMOUNT > 0) {
+  for (let i = 0; i < POINTS_AMOUNT; i++) {
+    renderPoint(pointsListElement, points[i], RenderPosition.BEFOREEND);
+  }
+} else {
+  tripEventsElement.replaceChild(new NoPointsView().getElement(), pointsListElement);
 }
+
