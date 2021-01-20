@@ -5,6 +5,7 @@ import FiltersView from './view/filters';
 import SortingView from './view/sorting';
 import EditPointView from './view/point-editor';
 import PointView from './view/point';
+import NoPointsView from './view/no-points';
 import {generatePoint} from './mock/point';
 import {render, RenderPosition} from './utils';
 
@@ -21,6 +22,10 @@ export const getTripRoute = (points) => {
 };
 
 export const getTripDates = (points) => {
+  if (!points.length) {
+    return ``;
+  }
+
   let {start, end} = points[0].times;
   points.forEach((point) => {
     if (point.times.start.diff(start) < 0) {
@@ -31,23 +36,15 @@ export const getTripDates = (points) => {
     }
   });
 
-  if (start.month() === end.month()) {
-    return `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.date()}`;
-  } else {
-    return `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.format(`MMM D`).toUpperCase()}`;
-  }
+  return start.month() === end.month()
+    ? `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.date()}`
+    : `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.format(`MMM D`).toUpperCase()}`;
 };
 
 export const calcTripCost = (points) => {
-  let cost = 0;
-  points.forEach((point) => {
-    cost += point.price;
-    point.offers.forEach((offer) => {
-      cost += offer.price;
-    });
-  });
-
-  return cost;
+  return points.reduce((sum, point) => {
+    return sum + point.price + point.offers.reduce((oSum, offer) => oSum + offer.price, 0);
+  }, 0);
 };
 
 const renderPoint = (container, point) => {
@@ -62,14 +59,32 @@ const renderPoint = (container, point) => {
     container.replaceChild(pointComponent.getElement(), editPointComponent.getElement());
   };
 
+  const keyDownHandler = (evt) => {
+    if (evt.key === `Esc` || evt.key === `Escape`) {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener(`keydown`, keyDownHandler);
+    }
+  };
+
   pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
     evt.preventDefault();
+    document.addEventListener(`keydown`, keyDownHandler);
     replacePointToForm();
   });
 
-  editPointComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
+  const formElement = editPointComponent.getElement().querySelector(`form`);
+
+  formElement.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    document.removeEventListener(`keydown`, keyDownHandler);
+    replaceFormToPoint();
+  });
+
+  formElement.querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
     evt.preventDefault();
     replaceFormToPoint();
+    document.removeEventListener(`keydown`, keyDownHandler);
   });
 
   render(container, pointComponent.getElement(), RenderPosition.BEFOREEND);
@@ -106,6 +121,11 @@ render(filtersContainerElement, new FiltersView().getElement(), RenderPosition.B
 
 render(tripEventsHeaderElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
 
-for (let i = 0; i < POINTS_AMOUNT; i++) {
-  renderPoint(pointsListElement, points[i], RenderPosition.BEFOREEND);
+if (POINTS_AMOUNT > 0) {
+  for (let i = 0; i < POINTS_AMOUNT; i++) {
+    renderPoint(pointsListElement, points[i], RenderPosition.BEFOREEND);
+  }
+} else {
+  tripEventsElement.replaceChild(new NoPointsView().getElement(), pointsListElement);
 }
+
