@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 const createTripInfoMainTemplate = (route, dates) => {
   return `
@@ -10,26 +10,15 @@ const createTripInfoMainTemplate = (route, dates) => {
   `;
 };
 
-export default class TripInfoMainView {
+export default class TripInfoMainView extends AbstractView {
   constructor(route, dates) {
-    this._element = null;
+    super();
+
     this._route = route;
     this._dates = dates;
   }
 
   getTemplate() {
     return createTripInfoMainTemplate(this._route, this._dates);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

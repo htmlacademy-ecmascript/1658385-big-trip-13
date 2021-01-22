@@ -7,7 +7,7 @@ import EditPointView from './view/point-editor';
 import PointView from './view/point';
 import NoPointsView from './view/no-points';
 import {generatePoint} from './mock/point';
-import {render, RenderPosition} from './utils';
+import {render, RenderPosition, replace} from './utils/render';
 
 export const getTripRoute = (points) => {
   const destinations = [];
@@ -52,11 +52,11 @@ const renderPoint = (container, point) => {
   const editPointComponent = new EditPointView(point);
 
   const replacePointToForm = () => {
-    container.replaceChild(editPointComponent.getElement(), pointComponent.getElement());
+    replace(editPointComponent, pointComponent);
   };
 
   const replaceFormToPoint = () => {
-    container.replaceChild(pointComponent.getElement(), editPointComponent.getElement());
+    replace(pointComponent, editPointComponent);
   };
 
   const keyDownHandler = (evt) => {
@@ -67,27 +67,22 @@ const renderPoint = (container, point) => {
     }
   };
 
-  pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
-    evt.preventDefault();
+  pointComponent.setRollupButtonClickHandler(() => {
     document.addEventListener(`keydown`, keyDownHandler);
     replacePointToForm();
   });
 
-  const formElement = editPointComponent.getElement().querySelector(`form`);
-
-  formElement.addEventListener(`submit`, (evt) => {
-    evt.preventDefault();
+  editPointComponent.setFormSubmitHandler(() => {
     document.removeEventListener(`keydown`, keyDownHandler);
     replaceFormToPoint();
   });
 
-  formElement.querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
-    evt.preventDefault();
+  editPointComponent.setRollupButtonClickHandler(() => {
     replaceFormToPoint();
     document.removeEventListener(`keydown`, keyDownHandler);
   });
 
-  render(container, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(container, pointComponent, RenderPosition.BEFOREEND);
 };
 
 const POINTS_AMOUNT = 30;
@@ -111,21 +106,21 @@ const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 const route = getTripRoute(points);
 const dates = getTripDates(points);
-render(tripInfoElement, new TripInfoMainView(route, dates).getElement(), RenderPosition.BEFOREEND);
+render(tripInfoElement, new TripInfoMainView(route, dates), RenderPosition.BEFOREEND);
 
 const cost = calcTripCost(points);
-render(tripInfoElement, new TripInfoCostView(cost).getElement(), RenderPosition.BEFOREEND);
+render(tripInfoElement, new TripInfoCostView(cost), RenderPosition.BEFOREEND);
 
-render(menuContainerElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
-render(filtersContainerElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
+render(menuContainerElement, new MenuView(), RenderPosition.BEFOREEND);
+render(filtersContainerElement, new FiltersView(), RenderPosition.BEFOREEND);
 
-render(tripEventsHeaderElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+render(tripEventsHeaderElement, new SortingView(), RenderPosition.AFTERBEGIN);
 
 if (POINTS_AMOUNT > 0) {
-  for (let i = 0; i < POINTS_AMOUNT; i++) {
-    renderPoint(pointsListElement, points[i], RenderPosition.BEFOREEND);
+  for (const point of points) {
+    renderPoint(pointsListElement, point, RenderPosition.BEFOREEND);
   }
 } else {
-  tripEventsElement.replaceChild(new NoPointsView().getElement(), pointsListElement);
+  replace(new NoPointsView(), pointsListElement);
 }
 

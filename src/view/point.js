@@ -1,5 +1,5 @@
-import {getDuration} from '../utils';
-import {createElement} from '../utils';
+import {getDuration} from '../utils/time';
+import AbstractView from './abstract';
 
 const createPointTemplate = (point) => {
   const {
@@ -57,25 +57,25 @@ const createPointTemplate = (point) => {
 };
 
 
-export default class PointView {
+export default class PointView extends AbstractView {
   constructor(point) {
-    this._element = null;
+    super();
+
     this._point = point;
+    this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _rollupButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.rollupButtonClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setRollupButtonClickHandler(callback) {
+    this._callback.rollupButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
   }
 }
