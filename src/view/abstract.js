@@ -6,6 +6,7 @@ export default class AbstractView {
       throw new Error(`Do not create instances of Abstract class!`);
     }
     this._element = null;
+    this._callback = {};
   }
 
   getTemplate() {
