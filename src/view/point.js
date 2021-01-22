@@ -1,5 +1,5 @@
 import {getDuration} from '../utils';
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 const createPointTemplate = (point) => {
   const {
@@ -57,25 +57,14 @@ const createPointTemplate = (point) => {
 };
 
 
-export default class PointView {
+export default class PointView extends AbstractView {
   constructor(point) {
-    this._element = null;
+    super();
+
     this._point = point;
   }
 
   getTemplate() {
     return createPointTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
