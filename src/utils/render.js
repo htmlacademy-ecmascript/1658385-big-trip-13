@@ -12,7 +12,7 @@ export const RenderPosition = {
   BEFOREEND: `beforeend`
 };
 
-export const render = (container, child, place) => {
+export const render = (container, child, place = RenderPosition.BEFOREEND) => {
   if (container instanceof AbstractView) {
     container = container.getElement();
   }

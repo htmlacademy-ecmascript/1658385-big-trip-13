@@ -82,7 +82,7 @@ const renderPoint = (container, point) => {
     document.removeEventListener(`keydown`, keyDownHandler);
   });
 
-  render(container, pointComponent, RenderPosition.BEFOREEND);
+  render(container, pointComponent);
 };
 
 const POINTS_AMOUNT = 30;
@@ -106,19 +106,19 @@ const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 const route = getTripRoute(points);
 const dates = getTripDates(points);
-render(tripInfoElement, new TripInfoMainView(route, dates), RenderPosition.BEFOREEND);
+render(tripInfoElement, new TripInfoMainView(route, dates));
 
 const cost = calcTripCost(points);
-render(tripInfoElement, new TripInfoCostView(cost), RenderPosition.BEFOREEND);
+render(tripInfoElement, new TripInfoCostView(cost));
 
-render(menuContainerElement, new MenuView(), RenderPosition.BEFOREEND);
-render(filtersContainerElement, new FiltersView(), RenderPosition.BEFOREEND);
+render(menuContainerElement, new MenuView());
+render(filtersContainerElement, new FiltersView());
 
 render(tripEventsHeaderElement, new SortingView(), RenderPosition.AFTERBEGIN);
 
 if (POINTS_AMOUNT > 0) {
   for (const point of points) {
-    renderPoint(pointsListElement, point, RenderPosition.BEFOREEND);
+    renderPoint(pointsListElement, point);
   }
 } else {
   replace(new NoPointsView(), pointsListElement);
