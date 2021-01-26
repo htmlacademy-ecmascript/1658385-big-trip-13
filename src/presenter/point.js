@@ -1,4 +1,4 @@
-import {render, replace} from '../utils/render';
+import {render, replace, remove} from '../utils/render';
 import PointView from '../view/point';
 import EditPointView from '../view/point-editor';
 
@@ -18,6 +18,9 @@ export default class PointPresenter {
   init(point) {
     this._point = point;
 
+    const prevPointComponent = this._pointComponent;
+    const prevEditPointComponent = this._editPointComponent;
+
     this._pointComponent = new PointView(point);
     this._editPointComponent = new EditPointView(point);
 
@@ -25,7 +28,26 @@ export default class PointPresenter {
     this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._editPointComponent.setRollupButtonClickHandler(this._handlePointRollupButtonClick);
 
-    render(this._pointsListElement, this._pointComponent);
+    if (prevPointComponent === null || prevEditPointComponent === null) {
+      render(this._pointsListElement, this._pointComponent);
+      return;
+    }
+
+    if (this._pointsListElement.contains(prevPointComponent.getElement())) {
+      replace(this._pointComponent, prevPointComponent);
+    }
+
+    if (this._pointsListElement.contains(prevEditPointComponent.getElement())) {
+      replace(this._editPointComponent, prevEditPointComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevEditPointComponent);
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._editPointComponent);
   }
 
   _replacePointToForm() {
