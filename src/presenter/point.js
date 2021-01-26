@@ -2,13 +2,20 @@ import {render, replace, remove} from '../utils/render';
 import PointView from '../view/point';
 import EditPointView from '../view/point-editor';
 
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
+
 export default class PointPresenter {
-  constructor(pointsListElement, changeData) {
+  constructor(pointsListElement, changeData, changeMode) {
     this._pointsListElement = pointsListElement;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._pointComponent = null;
     this._editPointComponent = null;
+    this._mode = Mode.DEFAULT;
 
     this._keyDownHandler = this._keyDownHandler.bind(this);
     this._handleFormRollupButtonClick = this._handleFormRollupButtonClick.bind(this);
@@ -36,11 +43,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this._pointsListElement.contains(prevPointComponent.getElement())) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._pointComponent, prevPointComponent);
     }
 
-    if (this._pointsListElement.contains(prevEditPointComponent.getElement())) {
+    if (this._mode === Mode.EDITING) {
       replace(this._editPointComponent, prevEditPointComponent);
     }
 
@@ -53,12 +60,21 @@ export default class PointPresenter {
     remove(this._editPointComponent);
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToPoint();
+    }
+  }
+
   _replacePointToForm() {
+    this._changeMode();
     replace(this._editPointComponent, this._pointComponent);
+    this._mode = Mode.EDITING;
   }
 
   _replaceFormToPoint() {
     replace(this._pointComponent, this._editPointComponent);
+    this._mode = Mode.DEFAULT;
   }
 
 
