@@ -5,8 +5,7 @@ import SortingView from '../view/sorting';
 import TripInfoCostView from '../view/trip-info-cost';
 import TripInfoMainView from '../view/trip-info-main';
 import NoPointsView from '../view/no-points';
-import EditPointView from '../view/point-editor';
-import PointView from '../view/point';
+import PointPresenter from './point';
 
 export default class TripPresenter {
   constructor(pointsListElement, tripInfoElement, menuContainerElement, filtersContainerElement, tripEventsHeaderElement) {
@@ -26,7 +25,6 @@ export default class TripPresenter {
 
   init(points) {
     this._points = points.slice();
-
 
     this._renderTrip();
   }
@@ -95,41 +93,8 @@ export default class TripPresenter {
   }
 
   _renderPoint(point) {
-    const pointComponent = new PointView(point);
-    const editPointComponent = new EditPointView(point);
-
-    const replacePointToForm = () => {
-      replace(editPointComponent, pointComponent);
-    };
-
-    const replaceFormToPoint = () => {
-      replace(pointComponent, editPointComponent);
-    };
-
-    const keyDownHandler = (evt) => {
-      if (evt.key === `Esc` || evt.key === `Escape`) {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener(`keydown`, keyDownHandler);
-      }
-    };
-
-    pointComponent.setRollupButtonClickHandler(() => {
-      document.addEventListener(`keydown`, keyDownHandler);
-      replacePointToForm();
-    });
-
-    editPointComponent.setFormSubmitHandler(() => {
-      document.removeEventListener(`keydown`, keyDownHandler);
-      replaceFormToPoint();
-    });
-
-    editPointComponent.setRollupButtonClickHandler(() => {
-      replaceFormToPoint();
-      document.removeEventListener(`keydown`, keyDownHandler);
-    });
-
-    render(this._pointsListElement, pointComponent);
+    const pointPresenter = new PointPresenter(this._pointsListElement);
+    pointPresenter.init(point);
   }
 
   _renderPointsList() {
