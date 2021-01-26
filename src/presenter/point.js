@@ -3,8 +3,9 @@ import PointView from '../view/point';
 import EditPointView from '../view/point-editor';
 
 export default class PointPresenter {
-  constructor(pointsListElement) {
+  constructor(pointsListElement, changeData) {
     this._pointsListElement = pointsListElement;
+    this._changeData = changeData;
 
     this._pointComponent = null;
     this._editPointComponent = null;
@@ -13,6 +14,7 @@ export default class PointPresenter {
     this._handleFormRollupButtonClick = this._handleFormRollupButtonClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handlePointRollupButtonClick = this._handlePointRollupButtonClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(point) {
@@ -25,6 +27,7 @@ export default class PointPresenter {
     this._editPointComponent = new EditPointView(point);
 
     this._pointComponent.setRollupButtonClickHandler(this._handleFormRollupButtonClick);
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._editPointComponent.setRollupButtonClickHandler(this._handlePointRollupButtonClick);
 
@@ -72,8 +75,14 @@ export default class PointPresenter {
     this._replacePointToForm();
   }
 
-  _handleFormSubmit() {
+  _handleFavoriteClick() {
+    this._point.isFavorite = !this._point.isFavorite;
+    this._changeData(this._point);
+  }
+
+  _handleFormSubmit(task) {
     document.removeEventListener(`keydown`, this._keyDownHandler);
+    this._changeData(task);
     this._replaceFormToPoint();
   }
 

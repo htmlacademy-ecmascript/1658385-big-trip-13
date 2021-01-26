@@ -35,7 +35,7 @@ export default class TripPresenter {
 
   _handlePointChange(updatedPoint) {
     this._points = updatePoint(this._points, updatedPoint);
-    this._pointPresenter.set(updatedPoint).init(updatedPoint);
+    this._pointPresenter.get(updatedPoint).init(updatedPoint);
   }
 
   _getTripRoute(points) {
@@ -102,7 +102,7 @@ export default class TripPresenter {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointsListElement);
+    const pointPresenter = new PointPresenter(this._pointsListElement, this._handlePointChange);
     pointPresenter.init(point);
     this._pointPresenter.set(point, pointPresenter);
   }
