@@ -14,6 +14,7 @@ export default class TripPresenter {
     this._menuContainerElement = menuContainerElement;
     this._filtersContainerElement = filtersContainerElement;
     this._tripEventsHeaderElement = tripEventsHeaderElement;
+    this._pointPresenter = new Map();
 
     this._menuElement = new MenuView();
     this._filtersElement = new FiltersView();
@@ -95,6 +96,7 @@ export default class TripPresenter {
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._pointsListElement);
     pointPresenter.init(point);
+    this._pointPresenter.set(point, pointPresenter);
   }
 
   _renderPointsList() {
@@ -114,5 +116,10 @@ export default class TripPresenter {
     } else {
       this._renderNoPoints();
     }
+  }
+
+  _clearPointsList() {
+    this._pointPresenter.forEach((presenter) => presenter.destroy());
+    this._pointPresenter = new Map();
   }
 }
