@@ -10,6 +10,9 @@ export default class PointPresenter {
     this._editPointComponent = null;
 
     this._keyDownHandler = this._keyDownHandler.bind(this);
+    this._handleFormRollupButtonClick = this._handleFormRollupButtonClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handlePointRollupButtonClick = this._handlePointRollupButtonClick.bind(this);
   }
 
   init(point) {
@@ -18,20 +21,9 @@ export default class PointPresenter {
     this._pointComponent = new PointView(point);
     this._editPointComponent = new EditPointView(point);
 
-    this._pointComponent.setRollupButtonClickHandler(() => {
-      document.addEventListener(`keydown`, this._keyDownHandler);
-      this._replacePointToForm();
-    });
-
-    this._editPointComponent.setFormSubmitHandler(() => {
-      document.removeEventListener(`keydown`, this._keyDownHandler);
-      this._replaceFormToPoint();
-    });
-
-    this._editPointComponent.setRollupButtonClickHandler(() => {
-      this._replaceFormToPoint();
-      document.removeEventListener(`keydown`, this._keyDownHandler);
-    });
+    this._pointComponent.setRollupButtonClickHandler(this._handleFormRollupButtonClick);
+    this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._editPointComponent.setRollupButtonClickHandler(this._handlePointRollupButtonClick);
 
     render(this._pointsListElement, this._pointComponent);
   }
@@ -51,5 +43,20 @@ export default class PointPresenter {
       this._replaceFormToPoint();
       document.removeEventListener(`keydown`, this._keyDownHandler);
     }
+  }
+
+  _handleFormRollupButtonClick() {
+    document.addEventListener(`keydown`, this._keyDownHandler);
+    this._replacePointToForm();
+  }
+
+  _handleFormSubmit() {
+    document.removeEventListener(`keydown`, this._keyDownHandler);
+    this._replaceFormToPoint();
+  }
+
+  _handlePointRollupButtonClick() {
+    this._replaceFormToPoint();
+    document.removeEventListener(`keydown`, this._keyDownHandler);
   }
 }
