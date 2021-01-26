@@ -73,6 +73,7 @@ export default class PointPresenter {
   }
 
   _replaceFormToPoint() {
+    document.removeEventListener(`keydown`, this._keyDownHandler);
     replace(this._pointComponent, this._editPointComponent);
     this._mode = Mode.DEFAULT;
   }
@@ -82,7 +83,6 @@ export default class PointPresenter {
     if (evt.key === `Esc` || evt.key === `Escape`) {
       evt.preventDefault();
       this._replaceFormToPoint();
-      document.removeEventListener(`keydown`, this._keyDownHandler);
     }
   }
 
@@ -97,13 +97,11 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(task) {
-    document.removeEventListener(`keydown`, this._keyDownHandler);
     this._changeData(task);
     this._replaceFormToPoint();
   }
 
   _handlePointRollupButtonClick() {
     this._replaceFormToPoint();
-    document.removeEventListener(`keydown`, this._keyDownHandler);
   }
 }
