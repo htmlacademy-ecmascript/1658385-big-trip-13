@@ -23,6 +23,8 @@ const getRandomInt = (a = 1, b = 0) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const START_DATE = dayjs().add(getRandomInt(30), `days`);
 const DURATION_IN_DAYS = 3;
 
@@ -160,6 +162,7 @@ export const generatePoint = () => {
   const description = generateDescription();
   const times = generateTime(START_DATE, DURATION_IN_DAYS);
   return {
+    id: generateId(),
     type,
     price,
     destination,

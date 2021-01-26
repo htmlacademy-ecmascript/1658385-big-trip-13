@@ -1,4 +1,5 @@
 import {render, RenderPosition, replace} from '../utils/render';
+import {updatePoint} from '../utils/common';
 import MenuView from '../view/menu';
 import FiltersView from '../view/filters';
 import SortingView from '../view/sorting';
@@ -22,12 +23,19 @@ export default class TripPresenter {
     this._tripInfoMainElement = new TripInfoMainView();
     this._tripInfoCostElement = new TripInfoCostView();
     this._noPointsElement = new NoPointsView();
+
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(points) {
     this._points = points.slice();
 
     this._renderTrip();
+  }
+
+  _handlePointChange(updatedPoint) {
+    this._points = updatePoint(this._points, updatedPoint);
+    this._pointPresenter.set(updatedPoint).init(updatedPoint);
   }
 
   _getTripRoute(points) {
