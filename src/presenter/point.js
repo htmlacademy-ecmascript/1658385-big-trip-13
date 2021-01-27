@@ -96,8 +96,8 @@ export default class PointPresenter {
     this._changeData(this._point);
   }
 
-  _handleFormSubmit(task) {
-    this._changeData(task);
+  _handleFormSubmit(point) {
+    this._changeData(point);
     this._replaceFormToPoint();
   }
 
