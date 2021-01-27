@@ -1,5 +1,5 @@
 import {OFFERS, TYPES, DESTINATIONS} from '../mock/point';
-import AbstractView from './abstract';
+import SmartView from './smart';
 
 const createTypeChoiceTemplate = (chosenType) => {
   return `
@@ -128,7 +128,7 @@ const createEditPointTemplate = (point = {}) => {
   `;
 };
 
-export default class EditPointView extends AbstractView {
+export default class EditPointView extends SmartView {
   constructor(point) {
     super();
 
