@@ -56,8 +56,11 @@ const createEditPointTemplate = (point = {}) => {
   const isThereAvailableOffers = !!availableOffers.length;
   const offersTemplate = isThereAvailableOffers ? createOffersTemplate(availableOffers, offers) : ``;
 
+  const isThereDescriptionText = !!description.text;
   const isTherePhotos = !!description.photos.length;
   const photosTemplate = isTherePhotos ? createPhotosTemplate(description.photos) : ``;
+
+  const isThereDescription = isThereDescriptionText || isTherePhotos;
 
   return `
     <li class="trip-events__item">
@@ -112,13 +115,13 @@ const createEditPointTemplate = (point = {}) => {
         <section class="event__details">
           ${offersTemplate}
 
-          <section class="event__section  event__section--destination">
+          ${isThereDescription ? `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${description.text}</p>
+            ${isThereDescriptionText ? `<p class="event__destination-description">${description.text}</p>` : ``}
 
             ${photosTemplate}
             </div>
-          </section>
+          </section>` : ``}
         </section>
       </form>
     </li>
