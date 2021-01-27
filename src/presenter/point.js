@@ -78,7 +78,6 @@ export default class PointPresenter {
     this._mode = Mode.DEFAULT;
   }
 
-
   _keyDownHandler(evt) {
     if (evt.key === `Esc` || evt.key === `Escape`) {
       evt.preventDefault();
@@ -92,12 +91,18 @@ export default class PointPresenter {
   }
 
   _handleFavoriteClick() {
-    this._point.isFavorite = !this._point.isFavorite;
-    this._changeData(this._point);
+    this._changeData(
+        Object.assign(
+            {},
+            this._point,
+            {
+              isFavorite: !this._point.isFavorite
+            }
+        ));
   }
 
-  _handleFormSubmit(task) {
-    this._changeData(task);
+  _handleFormSubmit(point) {
+    this._changeData(point);
     this._replaceFormToPoint();
   }
 
