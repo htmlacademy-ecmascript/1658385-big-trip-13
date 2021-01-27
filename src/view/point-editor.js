@@ -48,19 +48,11 @@ const createPhotosTemplate = (photos) => {
   `;
 };
 
-const createEditPointTemplate = (point = {}) => {
-  const {type, destination, times, price, offers, description} = point;
+const createEditPointTemplate = (data) => {
+  const {type, destination, times, price, offers, description, availableOffers, isThereAvailableOffers, isThereDescriptionText, isTherePhotos, isThereDescription} = data;
   const typeChoiceTemplate = createTypeChoiceTemplate(type);
-
-  const availableOffers = OFFERS.slice().filter((offer) => offer.type === type);
-  const isThereAvailableOffers = !!availableOffers.length;
   const offersTemplate = isThereAvailableOffers ? createOffersTemplate(availableOffers, offers) : ``;
-
-  const isThereDescriptionText = !!description.text;
-  const isTherePhotos = !!description.photos.length;
   const photosTemplate = isTherePhotos ? createPhotosTemplate(description.photos) : ``;
-
-  const isThereDescription = isThereDescriptionText || isTherePhotos;
 
   return `
     <li class="trip-events__item">
@@ -132,13 +124,13 @@ export default class EditPointView extends SmartView {
   constructor(point) {
     super();
 
-    this._point = point;
+    this._data = EditPointView.parsePointToData(point);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
-    return createEditPointTemplate(this._point);
+    return createEditPointTemplate(this._data);
   }
 
   _rollupButtonClickHandler(evt) {
@@ -148,7 +140,7 @@ export default class EditPointView extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(EditPointView.parseDataToPoint(this._data));
   }
 
   setRollupButtonClickHandler(callback) {
@@ -159,5 +151,37 @@ export default class EditPointView extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  static parsePointToData(point) {
+    const availableOffers = OFFERS.slice().filter((offer) => offer.type === point.type);
+    const isThereAvailableOffers = !!availableOffers.length;
+    const isThereDescriptionText = !!point.description.text;
+    const isTherePhotos = !!point.description.photos.length;
+    const isThereDescription = isThereDescriptionText || isTherePhotos;
+
+    return Object.assign(
+        {},
+        point,
+        {
+          availableOffers,
+          isThereAvailableOffers,
+          isThereDescriptionText,
+          isTherePhotos,
+          isThereDescription
+        }
+    );
+  }
+
+  static parseDataToPoint(data) {
+    const point = Object.assign({}, data);
+
+    delete point.availableOffers;
+    delete point.isThereAvailableOffers;
+    delete point.isThereDescriptionText;
+    delete point.isTherePhotos;
+    delete point.isThereDescription;
+
+    return point;
   }
 }
