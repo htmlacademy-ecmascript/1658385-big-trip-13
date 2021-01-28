@@ -1,4 +1,4 @@
-import {OFFERS, TYPES, DESTINATIONS} from '../mock/point';
+import {OFFERS, TYPES, DESTINATIONS, destinationDescriptions} from '../mock/point';
 import SmartView from './smart';
 
 const createTypeChoiceTemplate = (chosenType) => {
@@ -49,10 +49,12 @@ const createPhotosTemplate = (photos) => {
 };
 
 const createEditPointTemplate = (data) => {
-  const {type, destination, times, price, offers, description, availableOffers, isThereAvailableOffers, isThereDescriptionText, isTherePhotos, isThereDescription} = data;
+  const {type, destination, times, price, offers, description, availableOffers, isThereAvailableOffers, isThereDescText, isThereDescPhotos, isThereDescription} = data;
   const typeChoiceTemplate = createTypeChoiceTemplate(type);
   const offersTemplate = isThereAvailableOffers ? createOffersTemplate(availableOffers, offers) : ``;
   const photosTemplate = isTherePhotos ? createPhotosTemplate(description.photos) : ``;
+  const descTextTemplate = isThereDescText ? `<p class="event__destination-description">${description.text}</p>` : ``;
+  const descPhotosTemplate = isThereDescPhotos ? createPhotosTemplate(description.photos) : ``;
 
   return `
     <li class="trip-events__item">
@@ -109,9 +111,8 @@ const createEditPointTemplate = (data) => {
 
           ${isThereDescription ? `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            ${isThereDescriptionText ? `<p class="event__destination-description">${description.text}</p>` : ``}
-
-            ${photosTemplate}
+            ${descTextTemplate}
+            ${descPhotosTemplate}
             </div>
           </section>` : ``}
         </section>
@@ -153,6 +154,17 @@ export default class EditPointView extends SmartView {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
+  static getDescFields(destination) {
+    const description = destinationDescriptions.get(destination);
+    const isThereDescription = !!description;
+    return {
+      description,
+      isThereDescription,
+      isThereDescText: isThereDescription && !!description.text,
+      isThereDescPhotos: !!description.photos.length
+    };
+  }
+
   static parsePointToData(point) {
     const availableOffers = OFFERS.slice().filter((offer) => offer.type === point.type);
     const isThereAvailableOffers = !!availableOffers.length;
@@ -166,10 +178,8 @@ export default class EditPointView extends SmartView {
         {
           availableOffers,
           isThereAvailableOffers,
-          isThereDescriptionText,
-          isTherePhotos,
-          isThereDescription
-        }
+          ...EditPointView.getDescFields(point.destination)
+        },
     );
   }
 
@@ -178,9 +188,10 @@ export default class EditPointView extends SmartView {
 
     delete point.availableOffers;
     delete point.isThereAvailableOffers;
-    delete point.isThereDescriptionText;
-    delete point.isTherePhotos;
+    delete point.description;
     delete point.isThereDescription;
+    delete point.isThereDescText;
+    delete point.isThereDescPhotos;
 
     return point;
   }
