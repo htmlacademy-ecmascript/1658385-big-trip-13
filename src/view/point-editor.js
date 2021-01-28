@@ -131,6 +131,21 @@ export default class EditPointView extends SmartView {
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
     this._offerToggleHandler = this._offerToggleHandler.bind(this);
 
+    this._setInnerHandlers();
+  }
+
+  getTemplate() {
+    return createEditPointTemplate(this._data);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setRollupButtonClickHandler(this._callback.rollupButtonClick);
+  }
+
+  _setInnerHandlers() {
+
     this.getElement()
       .querySelector(`.event__type-group`)
       .addEventListener(`change`, this._typeChoiceHandler);
@@ -149,10 +164,6 @@ export default class EditPointView extends SmartView {
         offerButton.addEventListener(`change`, this._offerToggleHandler);
       }
     }
-  }
-
-  getTemplate() {
-    return createEditPointTemplate(this._data);
   }
 
   _typeChoiceHandler(evt) {
