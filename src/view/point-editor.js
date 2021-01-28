@@ -144,6 +144,12 @@ export default class EditPointView extends SmartView {
     this.setRollupButtonClickHandler(this._callback.rollupButtonClick);
   }
 
+  reset(point) {
+    this.updateData(
+        EditPointView.parsePointToData(point)
+    );
+  }
+
   _setInnerHandlers() {
     this.getElement()
       .querySelector(`.event__type-group`)
