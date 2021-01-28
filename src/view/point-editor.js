@@ -7,7 +7,7 @@ const createTypeChoiceTemplate = (chosenType) => {
       <legend class="visually-hidden">Event type</legend>
         ${TYPES.map((type) => `
           <div class="event__type-item">
-            <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.toLowerCase()}" ${type === chosenType ? `checked` : ``}>
+            <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${type === chosenType ? `checked` : ``}>
             <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type}</label>
           </div>
       `).join(``)}
@@ -145,7 +145,6 @@ export default class EditPointView extends SmartView {
   }
 
   _setInnerHandlers() {
-
     this.getElement()
       .querySelector(`.event__type-group`)
       .addEventListener(`change`, this._typeChoiceHandler);
@@ -167,17 +166,21 @@ export default class EditPointView extends SmartView {
   }
 
   _typeChoiceHandler(evt) {
+    const availableOffers = EditPointView.getAvailableOffers(evt.target.value);
     this.updateData({
-      type: evt.target.value
+      type: evt.target.value,
+      availableOffers,
+      isThereAvailableOffers: !!availableOffers.length,
+      pickedOffers: new Set()
     });
   }
 
   _destinationChoiceHandler(evt) {
     this.updateData(
         {
-          destination: evt.target.value,
-          ...EditPointView.getDescFields(evt.target.value)
+          destination: evt.target.value
         },
+        EditPointView.getDescFields(evt.target.value)
     );
   }
 
@@ -233,8 +236,12 @@ export default class EditPointView extends SmartView {
     };
   }
 
+  static getAvailableOffers(type) {
+    return OFFERS.slice().filter((offer) => offer.type === type);
+  }
+
   static parsePointToData(point) {
-    const availableOffers = OFFERS.slice().filter((offer) => offer.type === point.type);
+    const availableOffers = EditPointView.getAvailableOffers(point.type);
     const pickedOffers = new Set(point.offers.map((offer) => offer.name));
     const isThereAvailableOffers = !!availableOffers.length;
     return Object.assign(
@@ -243,9 +250,9 @@ export default class EditPointView extends SmartView {
         {
           availableOffers,
           isThereAvailableOffers,
-          pickedOffers,
-          ...EditPointView.getDescFields(point.destination)
+          pickedOffers
         },
+        EditPointView.getDescFields(point.destination)
     );
   }
 
