@@ -125,7 +125,7 @@ const generateOffers = (type) => {
   return chosenOffers;
 };
 
-const generateDescription = () => {
+export const generateDescription = () => {
   const TEXT_TEMPLATE = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
   const sentencesToChoose = TEXT_TEMPLATE.split(`. `);
@@ -144,6 +144,11 @@ const generateDescription = () => {
   };
 };
 
+export const destinationDescriptions = new Map();
+DESTINATIONS.forEach((destination) => {
+  destinationDescriptions.set(destination, generateDescription());
+});
+
 const generateTime = (tripStartDate, durationOfTripInDays) => {
   const start = tripStartDate.add(getRandomInt(durationOfTripInDays * 24), `hour`).minute(0);
   const durationInMinutes = getRandomInt(1, durationOfTripInDays * 24 * 6) * 10;
@@ -159,7 +164,6 @@ export const generatePoint = () => {
   const price = prices[type];
   const destination = generateDestination();
   const offers = generateOffers(type);
-  const description = generateDescription();
   const times = generateTime(START_DATE, DURATION_IN_DAYS);
   return {
     id: generateId(),
@@ -167,7 +171,6 @@ export const generatePoint = () => {
     price,
     destination,
     offers,
-    description,
     times,
     isFavorite: Boolean(getRandomInt(0, 1))
   };
