@@ -183,10 +183,12 @@ export default class EditPointView extends SmartView {
 
   _destinationChoiceHandler(evt) {
     this.updateData(
-        {
-          destination: evt.target.value
-        },
-        EditPointView.getDescFields(evt.target.value)
+        Object.assign(
+            {
+              destination: evt.target.value
+            },
+            EditPointView.getDescFields(evt.target.value)
+        )
     );
   }
 
