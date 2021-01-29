@@ -48,8 +48,8 @@ export default class TripPresenter {
     this._pointPresenter.get(updatedPoint.id).init(updatedPoint);
   }
 
-  _getTripRoute(points) {
-    const destinations = [];
+  static getTripRoute(points) {
+    let destinations = [];
     points.forEach((point) => {
       const lastDestination = destinations.slice(-1)[0];
       if (point.destination !== lastDestination) {
@@ -57,10 +57,14 @@ export default class TripPresenter {
       }
     });
 
+    if (destinations.length > 3) {
+      destinations = [destinations[0], `...`, destinations.pop()];
+    }
+
     return destinations.join(` &mdash; `);
   }
 
-  _getTripDates(points) {
+  static getTripDates(points) {
     if (!points.length) {
       return ``;
     }
@@ -80,18 +84,18 @@ export default class TripPresenter {
       : `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.format(`MMM D`).toUpperCase()}`;
   }
 
-  _calcTripCost(points) {
+  static calcTripCost(points) {
     return points.reduce((sum, point) => {
       return sum + point.price + point.offers.reduce((oSum, offer) => oSum + offer.price, 0);
     }, 0);
   }
 
   _renderTripInfo() {
-    const route = this._getTripRoute(this._points);
-    const dates = this._getTripDates(this._points);
+    const route = TripPresenter.getTripRoute(this._points);
+    const dates = TripPresenter.getTripDates(this._points);
     render(this._tripInfoElement, new TripInfoMainView(route, dates));
 
-    const cost = this._calcTripCost(this._points);
+    const cost = TripPresenter.calcTripCost(this._points);
     render(this._tripInfoElement, new TripInfoCostView(cost));
   }
 
