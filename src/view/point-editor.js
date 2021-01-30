@@ -159,12 +159,21 @@ export default class EditPointView extends SmartView {
     );
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.start.destroy();
+      this._datepicker.end.destroy();
+      this._datepicker = null;
+    }
+  }
+
   _setDatepickers() {
     if (this._datepicker) {
       this._datepicker.start.destroy();
-      this._datepicker.start = null;
       this._datepicker.end.destroy();
-      this._datepicker.end = null;
+      this._datepicker = null;
     }
 
     const makeDatePickerConfig = (defaultDate, tresholdDate, tresholdType) => {
