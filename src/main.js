@@ -29,7 +29,7 @@ pointsModel.setPoints(points);
 const filtersModel = new FiltersModel();
 const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement);
 
-const tripPresenter = new TripPresenter(pointsModel, pointsListElement, tripInfoElement, menuContainerElement, tripEventsHeaderElement);
+const tripPresenter = new TripPresenter(pointsModel, filtersModel, pointsListElement, tripInfoElement, menuContainerElement, tripEventsHeaderElement);
 
 filtersPresenter.init();
 tripPresenter.init();

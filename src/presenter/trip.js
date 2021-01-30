@@ -6,10 +6,12 @@ import TripInfoMainView from '../view/trip-info-main';
 import NoPointsView from '../view/no-points';
 import PointPresenter from './point';
 import {SortType} from '../const';
+import {filter} from '../utils/filter';
 
 export default class TripPresenter {
-  constructor(pointsModel, pointsListElement, tripInfoElement, menuContainerElement, tripEventsHeaderElement) {
+  constructor(pointsModel, filtersModel, pointsListElement, tripInfoElement, menuContainerElement, tripEventsHeaderElement) {
     this._pointsModel = pointsModel;
+    this._filtersModel = filtersModel;
     this._pointsListElement = pointsListElement;
     this._tripInfoElement = tripInfoElement;
     this._menuContainerElement = menuContainerElement;
@@ -26,6 +28,9 @@ export default class TripPresenter {
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
+    this._filtersModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -33,18 +38,27 @@ export default class TripPresenter {
   }
 
   _getPoints() {
+    const filterName = this._filtersModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filteredPoints = filter[filterName](points);
+
     switch (this._currentSortType) {
       case SortType.TIME:
-        this._pointsModel.getPoints().sort(this._sortPointsByTime);
+        filteredPoints.sort(this._sortPointsByTime);
         break;
       case SortType.PRICE:
-        this._pointsModel.getPoints().sort(this._sortPointsByPrice);
+        filteredPoints.sort(this._sortPointsByPrice);
         break;
       default:
-        this._pointsModel.getPoints().sort(this._sortPointsByDay);
+        filteredPoints.sort(this._sortPointsByDay);
     }
 
-    return this._pointsModel.getPoints();
+    return filteredPoints;
+  }
+
+  _handleModelEvent() {
+    this._clearPointsList();
+    this._renderPointsList();
   }
 
   _handleModeChange() {
