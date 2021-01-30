@@ -31,6 +31,7 @@ export default class TripPresenter {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._filtersModel.addObserver(this._handleModelEvent);
+    this._pointsModel.addObserver(this._handleModelEvent);
   }
 
   init() {

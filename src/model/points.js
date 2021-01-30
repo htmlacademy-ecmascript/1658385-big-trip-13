@@ -1,7 +1,7 @@
 import Observer from "../utils/observer";
 import {updatePoint} from '../utils/common';
 
-export default class Points extends Observer {
+export default class PointsModel extends Observer {
   constructor() {
     super();
     this._points = [];
@@ -22,7 +22,7 @@ export default class Points extends Observer {
       throw new Error(`Can't find point to update`);
     }
 
-    this.points = updatePoint(this._points, updatedPoint);
+    this._points = updatePoint(this._points, updatedPoint);
 
     this._notify();
   }
