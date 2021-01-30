@@ -167,30 +167,25 @@ export default class EditPointView extends SmartView {
       this._datepicker.end = null;
     }
 
+    const makeDatePickerConfig = (defaultDate, tresholdDate, tresholdType) => {
+      return {
+        'dateFormat': `d/m/y H:i`,
+        defaultDate,
+        [tresholdType]: tresholdDate,
+        'enableTime': true,
+        'time_24hr': true,
+        'onChange': this._dateChangeHandler(true)
+      };
+    };
+
     this._datepicker = {
       start: flatpickr(
           this.getElement().querySelector(`input[name=event-start-time]`),
-          {
-            dateFormat: `d/m/y H:i`,
-            defaultDate: this._data.times.start.toDate(),
-            maxDate: this._data.times.end.toDate(),
-            enableTime: true,
-            // eslint-disable-next-line camelcase
-            time_24hr: true,
-            onChange: this._dateChangeHandler(true)
-          }
+          makeDatePickerConfig(this._data.times.start.toDate(), this._data.times.end.toDate(), `maxDate`)
       ),
       end: flatpickr(
           this.getElement().querySelector(`input[name=event-end-time]`),
-          {
-            dateFormat: `d/m/y H:i`,
-            defaultDate: this._data.times.end.toDate(),
-            minDate: this._data.times.start.toDate(),
-            enableTime: true,
-            // eslint-disable-next-line camelcase
-            time_24hr: true,
-            onChange: this._dateChangeHandler(false)
-          }
+          makeDatePickerConfig(this._data.times.end.toDate(), this._data.times.start.toDate(), `minDate`)
       )
     };
   }
