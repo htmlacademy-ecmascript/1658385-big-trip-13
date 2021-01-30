@@ -21,8 +21,8 @@ export default class TripPresenter {
 
     this._menuElement = new MenuView();
     this._sortingElement = null;
-    this._tripInfoMainElement = new TripInfoMainView();
-    this._tripInfoCostElement = new TripInfoCostView();
+    this._tripInfoMainElement = null;
+    this._tripInfoCostElement = null;
     this._noPointsElement = new NoPointsView();
 
     this._handlePointChange = this._handlePointChange.bind(this);
@@ -60,6 +60,7 @@ export default class TripPresenter {
   _handleModelEvent() {
     this._clearPointsList();
     this._renderPointsList();
+    this._renderTripInfo();
   }
 
   _handleModeChange() {
@@ -114,13 +115,30 @@ export default class TripPresenter {
   }
 
   _renderTripInfo() {
+    const prevTripInfoMainElement = this._tripInfoMainElement;
+
     const points = this._getPoints();
     const route = TripPresenter.getTripRoute(points);
     const dates = TripPresenter.getTripDates(points);
-    render(this._tripInfoElement, new TripInfoMainView(route, dates));
+    this._tripInfoMainElement = new TripInfoMainView(route, dates);
+
+    if (prevTripInfoMainElement === null) {
+      render(this._tripInfoElement, this._tripInfoMainElement);
+    } else {
+      replace(this._tripInfoMainElement, prevTripInfoMainElement);
+      remove(prevTripInfoMainElement);
+    }
+
+    const prevTripInfoCostElement = this._tripInfoCostElement;
 
     const cost = TripPresenter.calcTripCost(points);
-    render(this._tripInfoElement, new TripInfoCostView(cost));
+    this._tripInfoCostElement = new TripInfoCostView(cost);
+    if (prevTripInfoCostElement === null) {
+      render(this._tripInfoElement, this._tripInfoCostElement);
+    } else {
+      replace(this._tripInfoCostElement, prevTripInfoCostElement);
+      remove(prevTripInfoCostElement);
+    }
   }
 
   _renderMenu() {
