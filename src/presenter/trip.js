@@ -1,4 +1,4 @@
-import {render, RenderPosition, replace} from '../utils/render';
+import {render, RenderPosition, replace, remove} from '../utils/render';
 import MenuView from '../view/menu';
 import SortingView from '../view/sorting';
 import TripInfoCostView from '../view/trip-info-cost';
@@ -20,7 +20,7 @@ export default class TripPresenter {
     this._currentSortType = SortType.DAY;
 
     this._menuElement = new MenuView();
-    this._sortingElement = new SortingView();
+    this._sortingElement = null;
     this._tripInfoMainElement = new TripInfoMainView();
     this._tripInfoCostElement = new TripInfoCostView();
     this._noPointsElement = new NoPointsView();
@@ -147,12 +147,23 @@ export default class TripPresenter {
     this._currentSortType = sortType;
 
     this._clearPointsList();
+    this._renderSorting();
     this._renderPointsList();
   }
 
   _renderSorting() {
-    render(this._pointsListElement, this._sortingElement, RenderPosition.AFTERBEGIN);
+    const prevSortingElement = this._sortingElement;
+
+    this._sortingElement = new SortingView(this._currentSortType);
     this._sortingElement._setSortTypeChangeHandler(this._handleSortTypeChange);
+
+    if (prevSortingElement === null) {
+      render(this._pointsListElement, this._sortingElement, RenderPosition.AFTERBEGIN);
+      return;
+    }
+
+    replace(this._sortingElement, prevSortingElement);
+    remove(prevSortingElement);
   }
 
   _renderNoPoints() {
