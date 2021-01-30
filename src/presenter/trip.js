@@ -1,6 +1,5 @@
 import {render, RenderPosition, replace} from '../utils/render';
 import MenuView from '../view/menu';
-import FiltersView from '../view/filters';
 import SortingView from '../view/sorting';
 import TripInfoCostView from '../view/trip-info-cost';
 import TripInfoMainView from '../view/trip-info-main';
@@ -9,18 +8,16 @@ import PointPresenter from './point';
 import {SortType} from '../const';
 
 export default class TripPresenter {
-  constructor(pointsModel, pointsListElement, tripInfoElement, menuContainerElement, filtersContainerElement, tripEventsHeaderElement) {
+  constructor(pointsModel, pointsListElement, tripInfoElement, menuContainerElement, tripEventsHeaderElement) {
     this._pointsModel = pointsModel;
     this._pointsListElement = pointsListElement;
     this._tripInfoElement = tripInfoElement;
     this._menuContainerElement = menuContainerElement;
-    this._filtersContainerElement = filtersContainerElement;
     this._tripEventsHeaderElement = tripEventsHeaderElement;
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
 
     this._menuElement = new MenuView();
-    this._filtersElement = new FiltersView();
     this._sortingElement = new SortingView();
     this._tripInfoMainElement = new TripInfoMainView();
     this._tripInfoCostElement = new TripInfoCostView();
@@ -115,10 +112,6 @@ export default class TripPresenter {
     render(this._menuContainerElement, this._menuElement);
   }
 
-  _renderFilters() {
-    render(this._filtersContainerElement, this._filtersElement);
-  }
-
   _sortPointsByDay(pointA, pointB) {
     return pointA.times.start.diff(pointB.times.start);
   }
@@ -166,7 +159,6 @@ export default class TripPresenter {
   _renderTrip() {
     this._renderTripInfo();
     this._renderMenu();
-    this._renderFilters();
     this._renderSorting();
 
     if (this._getPoints().length) {

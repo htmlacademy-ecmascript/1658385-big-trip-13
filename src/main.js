@@ -1,4 +1,5 @@
 import {generatePoint} from './mock/point';
+import FilterPresenter from './presenter/filters';
 import TripPresenter from './presenter/trip';
 import PointsModel from './model/points';
 
@@ -24,6 +25,9 @@ const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
 
-const tripPresenter = new TripPresenter(pointsModel, pointsListElement, tripInfoElement, menuContainerElement, filtersContainerElement, tripEventsHeaderElement);
+const filtersPresenter = new FilterPresenter(filtersContainerElement);
+filtersPresenter.init();
+
+const tripPresenter = new TripPresenter(pointsModel, pointsListElement, tripInfoElement, menuContainerElement, tripEventsHeaderElement);
 
 tripPresenter.init();
