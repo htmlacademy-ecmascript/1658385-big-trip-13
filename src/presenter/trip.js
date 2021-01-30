@@ -7,6 +7,7 @@ import NoPointsView from '../view/no-points';
 import PointPresenter from './point';
 import {SortType} from '../const';
 import {filter} from '../utils/filter';
+import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sort';
 
 export default class TripPresenter {
   constructor(pointsModel, filtersModel, pointsListElement, tripInfoElement, menuContainerElement, tripEventsHeaderElement) {
@@ -45,13 +46,13 @@ export default class TripPresenter {
 
     switch (this._currentSortType) {
       case SortType.TIME:
-        filteredPoints.sort(this._sortPointsByTime);
+        filteredPoints.sort(sortPointsByTime);
         break;
       case SortType.PRICE:
-        filteredPoints.sort(this._sortPointsByPrice);
+        filteredPoints.sort(sortPointsByPrice);
         break;
       default:
-        filteredPoints.sort(this._sortPointsByDay);
+        filteredPoints.sort(sortPointsByDay);
     }
 
     return filteredPoints;
@@ -143,18 +144,6 @@ export default class TripPresenter {
 
   _renderMenu() {
     render(this._menuContainerElement, this._menuElement);
-  }
-
-  _sortPointsByDay(pointA, pointB) {
-    return pointA.times.start.diff(pointB.times.start);
-  }
-
-  _sortPointsByTime(pointA, pointB) {
-    return pointB.times.end.diff(pointB.times.start) - pointA.times.end.diff(pointA.times.start);
-  }
-
-  _sortPointsByPrice(pointA, pointB) {
-    return pointB.price - pointA.price;
   }
 
   _handleSortTypeChange(sortType) {
