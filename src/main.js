@@ -1,6 +1,7 @@
 import {generatePoint} from './mock/point';
 import FilterPresenter from './presenter/filters';
 import TripPresenter from './presenter/trip';
+import FiltersModel from './model/filters';
 import PointsModel from './model/points';
 
 const POINTS_AMOUNT = 30;
@@ -25,9 +26,10 @@ const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
 
-const filtersPresenter = new FilterPresenter(filtersContainerElement);
-filtersPresenter.init();
+const filtersModel = new FiltersModel();
+const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement);
 
 const tripPresenter = new TripPresenter(pointsModel, pointsListElement, tripInfoElement, menuContainerElement, tripEventsHeaderElement);
 
+filtersPresenter.init();
 tripPresenter.init();
