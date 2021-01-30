@@ -10,13 +10,12 @@ import {filter} from '../utils/filter';
 import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sort';
 
 export default class TripPresenter {
-  constructor(pointsModel, filtersModel, pointsListElement, tripInfoElement, menuContainerElement, tripEventsHeaderElement) {
+  constructor(pointsModel, filtersModel, pointsListElement, tripInfoElement, menuContainerElement) {
     this._pointsModel = pointsModel;
     this._filtersModel = filtersModel;
     this._pointsListElement = pointsListElement;
     this._tripInfoElement = tripInfoElement;
     this._menuContainerElement = menuContainerElement;
-    this._tripEventsHeaderElement = tripEventsHeaderElement;
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
 

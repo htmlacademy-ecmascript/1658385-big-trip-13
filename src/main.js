@@ -20,7 +20,6 @@ const menuContainerElement = tripControlsElement.querySelector(`.menu-container`
 const filtersContainerElement = tripControlsElement.querySelector(`.filters-container`);
 
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
-const tripEventsHeaderElement = tripEventsElement.querySelector(`h2`);
 const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 const pointsModel = new PointsModel();
@@ -29,7 +28,7 @@ pointsModel.setPoints(points);
 const filtersModel = new FiltersModel();
 const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement);
 
-const tripPresenter = new TripPresenter(pointsModel, filtersModel, pointsListElement, tripInfoElement, menuContainerElement, tripEventsHeaderElement);
+const tripPresenter = new TripPresenter(pointsModel, filtersModel, pointsListElement, tripInfoElement, menuContainerElement);
 
 filtersPresenter.init();
 tripPresenter.init();
