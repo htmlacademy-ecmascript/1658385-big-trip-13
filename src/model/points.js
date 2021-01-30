@@ -1,4 +1,5 @@
 import Observer from "../utils/observer";
+import {updatePoint} from '../utils/common';
 
 export default class Points extends Observer {
   constructor() {
@@ -12,5 +13,17 @@ export default class Points extends Observer {
 
   getPoints() {
     return this._points;
+  }
+
+  updatePoint(updatedPoint) {
+    const index = this._points.findIndex((point) => point.id === updatedPoint.id);
+
+    if (index === -1) {
+      throw new Error(`Can't find point to update`);
+    }
+
+    this.points = updatePoint(this._points, updatedPoint);
+
+    this._notify();
   }
 }
