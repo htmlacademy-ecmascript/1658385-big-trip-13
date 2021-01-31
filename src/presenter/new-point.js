@@ -4,9 +4,10 @@ import {render, RenderPosition, remove} from '../utils/render';
 import {UpdateType, ActionType} from '../const';
 
 export default class NewPointPresenter {
-  constructor(pointsListElement, changeData) {
+  constructor(pointsListElement, changeData, newEventButton) {
     this._pointsListElement = pointsListElement;
     this._changeData = changeData;
+    this._newEventButton = newEventButton;
 
     this._editPointComponent = null;
 
@@ -19,6 +20,8 @@ export default class NewPointPresenter {
     if (this._editPointComponent !== null) {
       return;
     }
+
+    this._newEventButton.disabled = true;
 
     this._editPointComponent = new EditPointView();
     this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
@@ -38,6 +41,8 @@ export default class NewPointPresenter {
     this._editPointComponent = null;
 
     document.removeEventListener(`keydown`, this._keyDownHandler);
+
+    this._newEventButton.disabled = false;
   }
 
   _handleFormSubmit(point) {

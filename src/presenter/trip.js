@@ -11,7 +11,7 @@ import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sor
 import NewPointPresenter from './new-point';
 
 export default class TripPresenter {
-  constructor(pointsModel, filtersModel, tripEventsElement, pointsListElement, tripInfoElement, menuContainerElement) {
+  constructor(pointsModel, filtersModel, tripEventsElement, pointsListElement, tripInfoElement, menuContainerElement, newEventButton) {
     this._pointsModel = pointsModel;
     this._filtersModel = filtersModel;
     this._tripEventsElement = tripEventsElement;
@@ -35,7 +35,7 @@ export default class TripPresenter {
     this._filtersModel.addObserver(this._handleModelEvent);
     this._pointsModel.addObserver(this._handleModelEvent);
 
-    this._newPointPresenter = new NewPointPresenter(this._pointsListElement, this._handleViewAction);
+    this._newPointPresenter = new NewPointPresenter(this._pointsListElement, this._handleViewAction, newEventButton);
   }
 
   init() {
