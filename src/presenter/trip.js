@@ -63,8 +63,6 @@ export default class TripPresenter {
 
   createPoint() {
     this._filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._currentSortType = SortType.DAY;
-    this._renderSorting();
     this._newPointPresenter.init();
   }
 
@@ -72,14 +70,18 @@ export default class TripPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         this._pointPresenter.get(data.id).init(data);
+        this._renderTripInfo();
         break;
       case UpdateType.MINOR:
-        this._pointPresenter.get(data.id).init(data);
+        this._clearPointsList();
         this._renderTripInfo();
+        this._renderPointsList();
         break;
       case UpdateType.MAJOR:
         this._clearPointsList();
+        this._currentSortType = SortType.DAY;
         this._renderTripInfo();
+        this._renderSorting();
         this._renderPointsList();
         break;
     }

@@ -110,12 +110,7 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(point) {
-    let updateType = UpdateType.PATCH;
-    if (point.price !== this._point.price || !isEqualTime(point.times.start, this._point.times.start || !isEqualTime(point.times.end, this._point.times.end))) {
-      updateType = UpdateType.MAJOR;
-    } else if (point.destination !== this._point.destination || !isEqualOffers(point.offers, this._point.offers)) {
-      updateType = UpdateType.MINOR;
-    }
+    const updateType = (point.price !== this._point.price || !isEqualTime(point.times.start, this._point.times.start || !isEqualTime(point.times.end, this._point.times.end)) || point.destination !== this._point.destination || !isEqualOffers(point.offers, this._point.offers)) ? UpdateType.MINOR : UpdateType.PATCH;
     this._changeData(ActionType.UPDATE, updateType, point);
     this._replaceFormToPoint();
   }

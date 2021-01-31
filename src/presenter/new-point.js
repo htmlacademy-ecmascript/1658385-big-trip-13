@@ -48,7 +48,7 @@ export default class NewPointPresenter {
   _handleFormSubmit(point) {
     this._changeData(
         ActionType.ADD,
-        UpdateType.MAJOR,
+        UpdateType.MINOR,
         Object.assign(
             {id: generateId()},
             point
