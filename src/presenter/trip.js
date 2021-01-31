@@ -1,5 +1,4 @@
 import {render, RenderPosition, replace, remove} from '../utils/render';
-import MenuView from '../view/menu';
 import SortingView from '../view/sorting';
 import TripInfoCostView from '../view/trip-info-cost';
 import TripInfoMainView from '../view/trip-info-main';
@@ -11,17 +10,15 @@ import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sor
 import NewPointPresenter from './new-point';
 
 export default class TripPresenter {
-  constructor(pointsModel, filtersModel, tripEventsElement, pointsListElement, tripInfoElement, menuContainerElement, newEventButton) {
+  constructor(pointsModel, filtersModel, tripEventsElement, pointsListElement, tripInfoElement, newEventButton) {
     this._pointsModel = pointsModel;
     this._filtersModel = filtersModel;
     this._tripEventsElement = tripEventsElement;
     this._pointsListElement = pointsListElement;
     this._tripInfoElement = tripInfoElement;
-    this._menuContainerElement = menuContainerElement;
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
 
-    this._menuElement = new MenuView();
     this._sortingElement = null;
     this._tripInfoMainElement = null;
     this._tripInfoCostElement = null;
@@ -39,7 +36,14 @@ export default class TripPresenter {
   }
 
   init() {
-    this._renderTrip();
+    this._renderTripInfo();
+    this._renderSorting();
+
+    if (this._getPoints().length) {
+      this._renderPointsList();
+    } else {
+      this._renderNoPoints();
+    }
   }
 
   _getPoints() {
@@ -175,10 +179,6 @@ export default class TripPresenter {
     }
   }
 
-  _renderMenu() {
-    render(this._menuContainerElement, this._menuElement);
-  }
-
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {
       return;
@@ -219,18 +219,6 @@ export default class TripPresenter {
   _renderPointsList() {
     for (const point of this._getPoints()) {
       this._renderPoint(point);
-    }
-  }
-
-  _renderTrip() {
-    this._renderTripInfo();
-    this._renderMenu();
-    this._renderSorting();
-
-    if (this._getPoints().length) {
-      this._renderPointsList();
-    } else {
-      this._renderNoPoints();
     }
   }
 
