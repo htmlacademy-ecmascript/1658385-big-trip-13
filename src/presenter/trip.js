@@ -2,6 +2,7 @@ import {render, RenderPosition, replace, remove} from '../utils/render';
 import SortingView from '../view/sorting';
 import TripInfoCostView from '../view/trip-info-cost';
 import TripInfoMainView from '../view/trip-info-main';
+import PointsListView from '../view/points-list';
 import NoPointsView from '../view/no-points';
 import PointPresenter from './point';
 import {SortType, UpdateType, ActionType, FilterType} from '../const';
@@ -10,11 +11,11 @@ import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sor
 import NewPointPresenter from './new-point';
 
 export default class TripPresenter {
-  constructor(pointsModel, filtersModel, tripEventsElement, pointsListElement, tripInfoElement, newEventButton) {
+  constructor(pointsModel, filtersModel, tripEventsElement, tripInfoElement, newEventButton) {
     this._pointsModel = pointsModel;
     this._filtersModel = filtersModel;
     this._tripEventsElement = tripEventsElement;
-    this._pointsListElement = pointsListElement;
+    this._pointsListElement = new PointsListView();
     this._tripInfoElement = tripInfoElement;
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
@@ -29,16 +30,17 @@ export default class TripPresenter {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._filtersModel.addObserver(this._handleModelEvent);
-    this._pointsModel.addObserver(this._handleModelEvent);
-
     this._newPointPresenter = new NewPointPresenter(this._pointsListElement, this._handleViewAction, newEventButton);
   }
 
   init() {
+    this._filtersModel.addObserver(this._handleModelEvent);
+    this._pointsModel.addObserver(this._handleModelEvent);
+
     this._renderTripInfo();
     this._renderSorting();
 
+    render(this._tripEventsElement, this._pointsListElement);
     if (this._getPoints().length) {
       this._renderPointsList();
     } else {
@@ -226,5 +228,17 @@ export default class TripPresenter {
     this._newPointPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter = new Map();
+  }
+
+  destroy() {
+    remove(this._sortingElement);
+    this._sortingElement = null;
+    this._currentSortType = SortType.DAY;
+
+    this._clearPointsList();
+    remove(this._pointsListElement);
+
+    this._filtersModel.removeObserver(this._handleModelEvent);
+    this._pointsModel.removeObserver(this._handleModelEvent);
   }
 }

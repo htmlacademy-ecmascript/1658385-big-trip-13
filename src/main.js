@@ -23,7 +23,6 @@ const menuContainerElement = tripControlsElement.querySelector(`.menu-container`
 const filtersContainerElement = tripControlsElement.querySelector(`.filters-container`);
 
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
-const pointsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 const newEventButton = tripMainElement.querySelector(`.trip-main__event-add-btn`);
 
@@ -36,14 +35,16 @@ pointsModel.setPoints(points);
 const filtersModel = new FiltersModel();
 const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement);
 
-const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsElement, pointsListElement, tripInfoElement, newEventButton);
+const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsElement, tripInfoElement, newEventButton);
 
 const handleMenuClick = (tab) => {
   menuElement.setActiveTab(tab);
   switch (tab) {
     case TabType.TABLE:
+      tripPresenter.init();
       break;
     case TabType.STATS:
+      tripPresenter.destroy();
       break;
   }
 };
