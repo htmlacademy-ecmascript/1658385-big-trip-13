@@ -23,10 +23,10 @@ const getRandomInt = (a = 1, b = 0) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
-const START_DATE = dayjs().add(getRandomInt(30), `days`);
-const DURATION_IN_DAYS = 3;
+const START_DATE = dayjs().add(getRandomInt(-3), `days`);
+const DURATION_IN_DAYS = 6;
 
 export const OFFERS = [
   {

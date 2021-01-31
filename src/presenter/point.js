@@ -1,6 +1,9 @@
 import {render, replace, remove} from '../utils/render';
 import PointView from '../view/point';
 import EditPointView from '../view/point-editor';
+import {UpdateType, ActionType} from '../const';
+import {isEqualTime} from '../utils/time';
+import {isEqualOffers} from '../utils/common';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -22,6 +25,7 @@ export default class PointPresenter {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handlePointRollupButtonClick = this._handlePointRollupButtonClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeletePoint = this._handleDeletePoint.bind(this);
   }
 
   init(point) {
@@ -37,6 +41,7 @@ export default class PointPresenter {
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._editPointComponent.setRollupButtonClickHandler(this._handlePointRollupButtonClick);
+    this._editPointComponent.setDeleteClickHandler(this._handleDeletePoint);
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
       render(this._pointsListElement, this._pointComponent);
@@ -93,6 +98,8 @@ export default class PointPresenter {
 
   _handleFavoriteClick() {
     this._changeData(
+        ActionType.UPDATE,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._point,
@@ -103,8 +110,13 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    const updateType = (point.price !== this._point.price || !isEqualTime(point.times.start, this._point.times.start || !isEqualTime(point.times.end, this._point.times.end)) || point.destination !== this._point.destination || !isEqualOffers(point.offers, this._point.offers)) ? UpdateType.MINOR : UpdateType.PATCH;
+    this._changeData(ActionType.UPDATE, updateType, point);
     this._replaceFormToPoint();
+  }
+
+  _handleDeletePoint(point) {
+    this._changeData(ActionType.DELETE, UpdateType.MAJOR, point);
   }
 
   _handlePointRollupButtonClick() {
