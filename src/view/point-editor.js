@@ -91,11 +91,12 @@ const createEditPointTemplate = (data) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type}
             </label>
-            <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination} list="destination-list-1" pattern="${DESTINATIONS.join(`|`)}" title="Available destinations: ${DESTINATIONS.join(`, `)}">
+            <datalist id="destination-list-1">
               ${DESTINATIONS.map((destinationToChose) => `
-                <option value=${destinationToChose} ${destinationToChose === destination ? `selected` : ``}>${destinationToChose}</option>
+                <option value=${destinationToChose}></option>
               `).join(``)}
-            </select>
+            </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
@@ -111,7 +112,7 @@ const createEditPointTemplate = (data) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input type="number" class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -259,14 +260,16 @@ export default class EditPointView extends SmartView {
   }
 
   _destinationChoiceHandler(evt) {
-    this.updateData(
-        Object.assign(
-            {
-              destination: evt.target.value
-            },
-            EditPointView.getDescFields(evt.target.value)
-        )
-    );
+    if (DESTINATIONS.includes(evt.target.value)) {
+      this.updateData(
+          Object.assign(
+              {
+                destination: evt.target.value
+              },
+              EditPointView.getDescFields(evt.target.value)
+          )
+      );
+    }
   }
 
   _priceChangeHandler(evt) {
