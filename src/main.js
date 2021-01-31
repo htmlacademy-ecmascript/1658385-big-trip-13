@@ -5,6 +5,7 @@ import FiltersModel from './model/filters';
 import PointsModel from './model/points';
 import MenuView from './view/menu';
 import {render} from './utils/render';
+import {TabType} from './const';
 
 const POINTS_AMOUNT = 30;
 
@@ -36,6 +37,18 @@ const filtersModel = new FiltersModel();
 const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement);
 
 const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsElement, pointsListElement, tripInfoElement, newEventButton);
+
+const handleMenuClick = (tab) => {
+  menuElement.setActiveTab(tab);
+  switch (tab) {
+    case TabType.TABLE:
+      break;
+    case TabType.STATS:
+      break;
+  }
+};
+
+menuElement.setMenuClickHandler(handleMenuClick);
 
 filtersPresenter.init();
 tripPresenter.init();
