@@ -62,8 +62,9 @@ export default class TripPresenter {
   }
 
   createPoint() {
-    this._currentSortType = SortType.DAY;
     this._filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._currentSortType = SortType.DAY;
+    this._renderSorting();
     this._newPointPresenter.init();
   }
 
