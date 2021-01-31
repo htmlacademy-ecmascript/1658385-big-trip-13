@@ -9,3 +9,9 @@ export const FilterType = {
   FUTURE: `future`,
   PAST: `past`
 };
+
+export const UpdateType = {
+  PATCH: `PATCH`,
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};

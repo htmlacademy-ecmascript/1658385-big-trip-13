@@ -1,6 +1,9 @@
 import {render, replace, remove} from '../utils/render';
 import PointView from '../view/point';
 import EditPointView from '../view/point-editor';
+import {UpdateType} from '../const';
+import {isEqualTime} from '../utils/time';
+import {isEqualOffers} from '../utils/common';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -93,6 +96,7 @@ export default class PointPresenter {
 
   _handleFavoriteClick() {
     this._changeData(
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._point,
@@ -103,7 +107,13 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    let updateType = UpdateType.PATCH;
+    if (point.price !== this._point.price || !isEqualTime(point.times.start, this._point.times.start || !isEqualTime(point.times.end, this._point.times.end))) {
+      updateType = UpdateType.MAJOR;
+    } else if (point.destination !== this._point.destination || !isEqualOffers(point.offers, this._point.offers)) {
+      updateType = UpdateType.MINOR;
+    }
+    this._changeData(updateType, point);
     this._replaceFormToPoint();
   }
 

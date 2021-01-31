@@ -1,5 +1,6 @@
 import {render, replace, remove} from '../utils/render';
 import FiltersView from '../view/filters';
+import {UpdateType} from '../const';
 
 export default class FiltersPresenter {
   constructor(filtersModel, filtersContainerElement) {
@@ -40,7 +41,7 @@ export default class FiltersPresenter {
       return;
     }
 
-    this._filtersModel.setFilter(newFilter);
+    this._filtersModel.setFilter(UpdateType.MAJOR, newFilter);
   }
 
   _getFilters() {

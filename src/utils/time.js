@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const getDuration = (start, end) => {
   const daysDuration = end.diff(start, `day`);
   const hoursDuration = end.subtract(daysDuration, `day`).diff(start, `hour`);
@@ -22,4 +24,8 @@ export const getDuration = (start, end) => {
     }
   }
   return duration;
+};
+
+export const isEqualTime = (dateA, dateB) => {
+  return dayjs(dateA).isSame(dateB, `m`);
 };
