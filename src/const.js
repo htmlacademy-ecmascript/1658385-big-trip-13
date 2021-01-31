@@ -18,5 +18,6 @@ export const UpdateType = {
 
 export const ActionType = {
   UPDATE: `UPDATE`,
-  DELETE: `DELETE`
+  DELETE: `DELETE`,
+  ADD: `ADD`
 };

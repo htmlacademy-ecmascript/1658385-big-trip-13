@@ -5,6 +5,18 @@ import dayjs from 'dayjs';
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
+const BLANK_POINT = {
+  type: `Taxi`,
+  price: 20,
+  destination: `Amsterdam`,
+  offers: [],
+  times: {
+    start: dayjs(),
+    end: dayjs().add(1, `hour`)
+  },
+  isFavorite: false
+};
+
 const createTypeChoiceTemplate = (chosenType) => {
   return `
     <fieldset class="event__type-group">
@@ -53,7 +65,7 @@ const createPhotosTemplate = (photos) => {
 };
 
 const createEditPointTemplate = (data) => {
-  const {type, destination, times, price, pickedOffers, description, availableOffers, isThereAvailableOffers, isThereDescText, isThereDescPhotos, isThereDescription} = data;
+  const {isNewPoint, type, destination, times, price, pickedOffers, description, availableOffers, isThereAvailableOffers, isThereDescText, isThereDescPhotos, isThereDescription} = data;
   const typeChoiceTemplate = createTypeChoiceTemplate(type);
   const offersTemplate = isThereAvailableOffers ? createOffersTemplate(availableOffers, pickedOffers) : ``;
   const descTextTemplate = isThereDescText ? `<p class="event__destination-description">${description.text}</p>` : ``;
@@ -103,10 +115,12 @@ const createEditPointTemplate = (data) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
+          ${isNewPoint
+    ? `<button class="event__reset-btn" type="reset">Cancel</button>`
+    : `<button class="event__reset-btn" type="reset">Delete</button>`}
+          ${isNewPoint ? `` : `<button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
-          </button>
+          </button>`}
         </header>
         <section class="event__details">
           ${offersTemplate}
@@ -124,7 +138,7 @@ const createEditPointTemplate = (data) => {
 };
 
 export default class EditPointView extends SmartView {
-  constructor(point) {
+  constructor(point = BLANK_POINT) {
     super();
 
     this._data = EditPointView.parsePointToData(point);
@@ -151,7 +165,9 @@ export default class EditPointView extends SmartView {
     this._setInnerHandlers();
     this._setDatepickers();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setRollupButtonClickHandler(this._callback.rollupButtonClick);
+    if (!this._data.isNewPoint) {
+      this.setRollupButtonClickHandler(this._callback.rollupButtonClick);
+    }
   }
 
   reset(point) {
@@ -320,6 +336,7 @@ export default class EditPointView extends SmartView {
   }
 
   static parsePointToData(point) {
+    const isNewPoint = typeof point.id === `undefined`;
     const availableOffers = EditPointView.getAvailableOffers(point.type);
     const pickedOffers = new Set(point.offers.map((offer) => offer.name));
     const isThereAvailableOffers = !!availableOffers.length;
@@ -327,6 +344,7 @@ export default class EditPointView extends SmartView {
         {},
         point,
         {
+          isNewPoint,
           availableOffers,
           isThereAvailableOffers,
           pickedOffers

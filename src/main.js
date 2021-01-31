@@ -4,7 +4,7 @@ import TripPresenter from './presenter/trip';
 import FiltersModel from './model/filters';
 import PointsModel from './model/points';
 
-const POINTS_AMOUNT = 30;
+const POINTS_AMOUNT = 3;
 
 const points = new Array(POINTS_AMOUNT).fill().map(generatePoint);
 
@@ -28,7 +28,12 @@ pointsModel.setPoints(points);
 const filtersModel = new FiltersModel();
 const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement);
 
-const tripPresenter = new TripPresenter(pointsModel, filtersModel, pointsListElement, tripInfoElement, menuContainerElement);
+const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsElement, pointsListElement, tripInfoElement, menuContainerElement);
 
 filtersPresenter.init();
 tripPresenter.init();
+
+tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  tripPresenter.createPoint();
+});

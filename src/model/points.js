@@ -41,4 +41,13 @@ export default class PointsModel extends Observer {
 
     this._notify(updateType);
   }
+
+  addPoint(updateType, addedPoint) {
+    this._points = [
+      addedPoint,
+      ...this._points
+    ];
+
+    this._notify(updateType);
+  }
 }

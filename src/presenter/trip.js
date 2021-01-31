@@ -5,14 +5,16 @@ import TripInfoCostView from '../view/trip-info-cost';
 import TripInfoMainView from '../view/trip-info-main';
 import NoPointsView from '../view/no-points';
 import PointPresenter from './point';
-import {SortType, UpdateType, ActionType} from '../const';
+import {SortType, UpdateType, ActionType, FilterType} from '../const';
 import {filter} from '../utils/filter';
 import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sort';
+import NewPointPresenter from './new-point';
 
 export default class TripPresenter {
-  constructor(pointsModel, filtersModel, pointsListElement, tripInfoElement, menuContainerElement) {
+  constructor(pointsModel, filtersModel, tripEventsElement, pointsListElement, tripInfoElement, menuContainerElement) {
     this._pointsModel = pointsModel;
     this._filtersModel = filtersModel;
+    this._tripEventsElement = tripEventsElement;
     this._pointsListElement = pointsListElement;
     this._tripInfoElement = tripInfoElement;
     this._menuContainerElement = menuContainerElement;
@@ -32,6 +34,8 @@ export default class TripPresenter {
 
     this._filtersModel.addObserver(this._handleModelEvent);
     this._pointsModel.addObserver(this._handleModelEvent);
+
+    this._newPointPresenter = new NewPointPresenter(this._pointsListElement, this._handleViewAction);
   }
 
   init() {
@@ -57,6 +61,12 @@ export default class TripPresenter {
     return filteredPoints;
   }
 
+  createPoint() {
+    this._currentSortType = SortType.DAY;
+    this._filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._newPointPresenter.init();
+  }
+
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
@@ -75,6 +85,7 @@ export default class TripPresenter {
   }
 
   _handleModeChange() {
+    this._newPointPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
@@ -85,6 +96,10 @@ export default class TripPresenter {
         break;
       case ActionType.DELETE:
         this._pointsModel.deletePoint(updateType, updatedPoint);
+        break;
+      case ActionType.ADD:
+        this._pointsModel.addPoint(updateType, updatedPoint);
+        break;
     }
   }
 
@@ -180,7 +195,7 @@ export default class TripPresenter {
     this._sortingElement._setSortTypeChangeHandler(this._handleSortTypeChange);
 
     if (prevSortingElement === null) {
-      render(this._pointsListElement, this._sortingElement, RenderPosition.AFTERBEGIN);
+      render(this._tripEventsElement, this._sortingElement, RenderPosition.AFTERBEGIN);
       return;
     }
 
@@ -217,6 +232,7 @@ export default class TripPresenter {
   }
 
   _clearPointsList() {
+    this._newPointPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter = new Map();
   }
