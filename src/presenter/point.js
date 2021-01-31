@@ -1,7 +1,7 @@
 import {render, replace, remove} from '../utils/render';
 import PointView from '../view/point';
 import EditPointView from '../view/point-editor';
-import {UpdateType} from '../const';
+import {UpdateType, ActionType} from '../const';
 import {isEqualTime} from '../utils/time';
 import {isEqualOffers} from '../utils/common';
 
@@ -96,6 +96,7 @@ export default class PointPresenter {
 
   _handleFavoriteClick() {
     this._changeData(
+        ActionType.UPDATE,
         UpdateType.PATCH,
         Object.assign(
             {},
@@ -113,7 +114,7 @@ export default class PointPresenter {
     } else if (point.destination !== this._point.destination || !isEqualOffers(point.offers, this._point.offers)) {
       updateType = UpdateType.MINOR;
     }
-    this._changeData(updateType, point);
+    this._changeData(ActionType.UPDATE, updateType, point);
     this._replaceFormToPoint();
   }
 

@@ -5,7 +5,7 @@ import TripInfoCostView from '../view/trip-info-cost';
 import TripInfoMainView from '../view/trip-info-main';
 import NoPointsView from '../view/no-points';
 import PointPresenter from './point';
-import {SortType, UpdateType} from '../const';
+import {SortType, UpdateType, ActionType} from '../const';
 import {filter} from '../utils/filter';
 import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sort';
 
@@ -25,7 +25,7 @@ export default class TripPresenter {
     this._tripInfoCostElement = null;
     this._noPointsElement = new NoPointsView();
 
-    this._handlePointChange = this._handlePointChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -78,8 +78,12 @@ export default class TripPresenter {
     this._pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  _handlePointChange(updateType, updatedPoint) {
-    this._pointsModel.updatePoint(updateType, updatedPoint);
+  _handleViewAction(actionType, updateType, updatedPoint) {
+    switch (actionType) {
+      case ActionType.UPDATE:
+        this._pointsModel.updatePoint(updateType, updatedPoint);
+        break;
+    }
   }
 
   static getTripRoute(points) {
@@ -187,7 +191,7 @@ export default class TripPresenter {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointsListElement, this._handlePointChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._pointsListElement, this._handleViewAction, this._handleModeChange);
     pointPresenter.init(point);
     this._pointPresenter.set(point.id, pointPresenter);
   }

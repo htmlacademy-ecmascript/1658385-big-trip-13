@@ -15,3 +15,7 @@ export const UpdateType = {
   MINOR: `MINOR`,
   MAJOR: `MAJOR`
 };
+
+export const ActionType = {
+  UPDATE: `UPDATE`
+};
