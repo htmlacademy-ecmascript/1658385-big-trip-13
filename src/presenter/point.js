@@ -25,6 +25,7 @@ export default class PointPresenter {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handlePointRollupButtonClick = this._handlePointRollupButtonClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeletePoint = this._handleDeletePoint.bind(this);
   }
 
   init(point) {
@@ -40,6 +41,7 @@ export default class PointPresenter {
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._editPointComponent.setRollupButtonClickHandler(this._handlePointRollupButtonClick);
+    this._editPointComponent.setDeleteClickHandler(this._handleDeletePoint);
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
       render(this._pointsListElement, this._pointComponent);
@@ -116,6 +118,10 @@ export default class PointPresenter {
     }
     this._changeData(ActionType.UPDATE, updateType, point);
     this._replaceFormToPoint();
+  }
+
+  _handleDeletePoint(point) {
+    this._changeData(ActionType.DELETE, UpdateType.MAJOR, point);
   }
 
   _handlePointRollupButtonClick() {

@@ -83,6 +83,8 @@ export default class TripPresenter {
       case ActionType.UPDATE:
         this._pointsModel.updatePoint(updateType, updatedPoint);
         break;
+      case ActionType.DELETE:
+        this._pointsModel.deletePoint(updateType, updatedPoint);
     }
   }
 

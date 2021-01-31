@@ -137,6 +137,7 @@ export default class EditPointView extends SmartView {
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
     this._offerToggleHandler = this._offerToggleHandler.bind(this);
     this._dateChangeHandler = this._dateChangeHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepickers();
@@ -283,6 +284,11 @@ export default class EditPointView extends SmartView {
     this._callback.formSubmit(EditPointView.parseDataToPoint(this._data));
   }
 
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.delete(EditPointView.parseDataToPoint(this._data));
+  }
+
   setRollupButtonClickHandler(callback) {
     this._callback.rollupButtonClick = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
@@ -291,6 +297,11 @@ export default class EditPointView extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.delete = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._deleteClickHandler);
   }
 
   static getDescFields(destination) {
