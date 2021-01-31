@@ -3,7 +3,7 @@ import PointView from '../view/point';
 import EditPointView from '../view/point-editor';
 import {UpdateType, ActionType} from '../const';
 import {isEqualTime} from '../utils/time';
-import {isEqualOffers} from '../utils/common';
+import {areOffersEqual, handleEscape} from '../utils/common';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -84,11 +84,10 @@ export default class PointPresenter {
   }
 
   _keyDownHandler(evt) {
-    if (evt.key === `Esc` || evt.key === `Escape`) {
-      evt.preventDefault();
+    handleEscape(evt, () => {
       this._editPointComponent.reset(this._point);
       this._replaceFormToPoint();
-    }
+    });
   }
 
   _handleFormRollupButtonClick() {
@@ -110,7 +109,7 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(point) {
-    const updateType = (point.price !== this._point.price || !isEqualTime(point.times.start, this._point.times.start || !isEqualTime(point.times.end, this._point.times.end)) || point.destination !== this._point.destination || !isEqualOffers(point.offers, this._point.offers)) ? UpdateType.MINOR : UpdateType.PATCH;
+    const updateType = (point.price !== this._point.price || !isEqualTime(point.times.start, this._point.times.start || !isEqualTime(point.times.end, this._point.times.end)) || point.destination !== this._point.destination || !areOffersEqual(point.offers, this._point.offers)) ? UpdateType.MINOR : UpdateType.PATCH;
     this._changeData(ActionType.UPDATE, updateType, point);
     this._replaceFormToPoint();
   }

@@ -2,6 +2,7 @@ import EditPointView from '../view/point-editor';
 import {generateId} from '../mock/point';
 import {render, RenderPosition, remove} from '../utils/render';
 import {UpdateType, ActionType} from '../const';
+import {handleEscape} from '../utils/common';
 
 export default class NewPointPresenter {
   constructor(pointsListElement, changeData, newEventButton) {
@@ -63,9 +64,8 @@ export default class NewPointPresenter {
   }
 
   _keyDownHandler(evt) {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
-      evt.preventDefault();
+    handleEscape(evt, () => {
       this.destroy();
-    }
+    });
   }
 }
