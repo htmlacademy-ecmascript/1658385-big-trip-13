@@ -1,29 +1,32 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
 
-export const getDuration = (start, end) => {
-  const daysDuration = end.diff(start, `day`);
-  const hoursDuration = end.subtract(daysDuration, `day`).diff(start, `hour`);
-  const minutesDuration = end.subtract(daysDuration, `day`).subtract(hoursDuration, `hour`).diff(start, `minute`);
-  let duration = `${minutesDuration}M`;
+export const humanizeDuration = (milliseconds) => {
+  const dayjsDuration = dayjs.duration(milliseconds);
+  const daysDuration = dayjsDuration.days();
+  const hoursDuration = dayjsDuration.hours();
+  const minutesDuration = dayjsDuration.minutes();
+  let humanDuration = `${minutesDuration}M`;
   if (!minutesDuration) {
-    duration = `0`.concat(duration);
+    humanDuration = `0`.concat(humanDuration);
   }
   if (hoursDuration) {
-    duration = `${hoursDuration}H `.concat(duration);
+    humanDuration = `${hoursDuration}H `.concat(humanDuration);
     if (hoursDuration < 10) {
-      duration = `0`.concat(duration);
+      humanDuration = `0`.concat(humanDuration);
     }
   }
   if (daysDuration) {
     if (!hoursDuration) {
-      duration = `00H `.concat(duration);
+      humanDuration = `00H `.concat(humanDuration);
     }
-    duration = `${daysDuration}D `.concat(duration);
+    humanDuration = `${daysDuration}D `.concat(humanDuration);
     if (daysDuration < 10) {
-      duration = `0`.concat(duration);
+      humanDuration = `0`.concat(humanDuration);
     }
   }
-  return duration;
+  return humanDuration;
 };
 
 export const isEqualTime = (dateA, dateB) => {

@@ -1,4 +1,4 @@
-import {getDuration} from '../utils/time';
+import {humanizeDuration} from '../utils/time';
 import AbstractView from './abstract';
 
 const createPointTemplate = (point) => {
@@ -11,7 +11,7 @@ const createPointTemplate = (point) => {
     isFavorite
   } = point;
 
-  const duration = getDuration(times.start, times.end);
+  const duration = humanizeDuration(times.end.diff(times.start));
 
   const favoriteClassName = isFavorite ? `event__favorite-btn--active` : ``;
   return `

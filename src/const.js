@@ -21,3 +21,10 @@ export const ActionType = {
   DELETE: `DELETE`,
   ADD: `ADD`
 };
+
+export const TabType = {
+  TABLE: `table`,
+  STATS: `stats`
+};
+
+export const BAR_HEIGHT = 55;
