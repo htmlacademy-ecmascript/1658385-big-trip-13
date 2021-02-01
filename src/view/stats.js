@@ -1,8 +1,9 @@
 import AbstractView from './abstract';
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import dayjs from 'dayjs';
-import {getDuration} from '../utils/time';
+import {humanizeDuration} from '../utils/time';
+import {getUniqueArray, calcPricesByType, calcTypes, calcDurations} from '../utils/stats';
+import {BAR_HEIGHT} from '../const';
 
 const createStatsTemplate = () => {
   return `
@@ -42,18 +43,20 @@ export default class StatsView extends AbstractView {
     const typeCtx = this.getElement().querySelector(`.statistics__chart--transport`);
     const timeCtx = this.getElement().querySelector(`.statistics__chart--time`);
 
-    const BAR_HEIGHT = 55;
-    moneyCtx.height = BAR_HEIGHT * 5;
-    typeCtx.height = BAR_HEIGHT * 5;
-    timeCtx.height = BAR_HEIGHT * 5;
+    const types = getUniqueArray(this._data.map((point) => point.type));
+    const labels = types.map((type) => type.toUpperCase());
+
+    moneyCtx.height = BAR_HEIGHT * types.length;
+    typeCtx.height = BAR_HEIGHT * types.length;
+    timeCtx.height = BAR_HEIGHT * types.length;
 
     this._charts.money = new Chart(moneyCtx, {
       plugins: [ChartDataLabels],
       type: `horizontalBar`,
       data: {
-        labels: [`TAXI`, `BUS`, `TRAIN`, `SHIP`, `TRANSPORT`, `DRIVE`],
+        labels,
         datasets: [{
-          data: [400, 300, 200, 160, 150, 100],
+          data: calcPricesByType(this._data, types),
           backgroundColor: `#ffffff`,
           hoverBackgroundColor: `#ffffff`,
           anchor: `start`
@@ -116,9 +119,9 @@ export default class StatsView extends AbstractView {
       plugins: [ChartDataLabels],
       type: `horizontalBar`,
       data: {
-        labels: [`TAXI`, `BUS`, `TRAIN`, `SHIP`, `TRANSPORT`, `DRIVE`],
+        labels,
         datasets: [{
-          data: [4, 3, 2, 1, 1, 1],
+          data: calcTypes(this._data, types),
           backgroundColor: `#ffffff`,
           hoverBackgroundColor: `#ffffff`,
           anchor: `start`
@@ -177,15 +180,13 @@ export default class StatsView extends AbstractView {
       }
     });
 
-    const time = dayjs();
-
     this._charts.time = new Chart(timeCtx, {
       plugins: [ChartDataLabels],
       type: `horizontalBar`,
       data: {
-        labels: [`TAXI`, `BUS`, `TRAIN`, `SHIP`, `TRANSPORT`, `DRIVE`],
+        labels,
         datasets: [{
-          data: [time.add(4, `days`), time.add(3, `days`), time.add(2, `days`), time.add(1, `days`), time.add(1, `days`), time.add(1, `days`)],
+          data: calcDurations(this._data, types),
           backgroundColor: `#ffffff`,
           hoverBackgroundColor: `#ffffff`,
           anchor: `start`
@@ -200,12 +201,12 @@ export default class StatsView extends AbstractView {
             color: `#000000`,
             anchor: `end`,
             align: `start`,
-            formatter: (val) => `${getDuration(time, val)}`
+            formatter: (val) => `${humanizeDuration(val)}`
           }
         },
         title: {
           display: true,
-          text: `TYPE`,
+          text: `TIME-SPEND`,
           fontColor: `#000000`,
           fontSize: 23,
           position: `left`
