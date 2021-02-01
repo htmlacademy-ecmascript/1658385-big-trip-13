@@ -8,8 +8,10 @@ export default class PointsModel extends Observer {
     this._points = [];
   }
 
-  setPoints(points) {
+  setPoints(updateType, points) {
     this._points = points.slice();
+
+    this._notify(updateType);
   }
 
   getPoints() {
@@ -56,6 +58,7 @@ export default class PointsModel extends Observer {
     const type = capitalizeFirstLetter(point.type);
 
     return {
+      id: point.id,
       type,
       price: point.base_price,
       destination: point.destination.name,

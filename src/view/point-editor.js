@@ -1,4 +1,4 @@
-import {OFFERS, TYPES, DESTINATIONS, destinationDescriptions} from '../mock/point';
+import {OFFERS, TYPES, DESTINATIONS} from '../mock/point';
 import SmartView from './smart';
 import flatpickr from "flatpickr";
 import dayjs from 'dayjs';
@@ -323,14 +323,13 @@ export default class EditPointView extends SmartView {
     this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._deleteClickHandler);
   }
 
-  static getDescFields(destination) {
-    const description = destinationDescriptions.get(destination);
+  static getDescFields(description) {
     const isThereDescription = !!description;
     return {
       description,
       isThereDescription,
       isThereDescText: isThereDescription && !!description.text,
-      isThereDescPhotos: !!description.photos.length
+      isThereDescPhotos: isThereDescription && !!description.photos
     };
   }
 
@@ -352,7 +351,7 @@ export default class EditPointView extends SmartView {
           isThereAvailableOffers,
           pickedOffers
         },
-        EditPointView.getDescFields(point.destination)
+        EditPointView.getDescFields(point.description)
     );
   }
 
@@ -361,7 +360,7 @@ export default class EditPointView extends SmartView {
     point.offers = OFFERS.filter((offer) => data.pickedOffers.has(offer.name));
     delete point.availableOffers;
     delete point.isThereAvailableOffers;
-    delete point.description;
+    delete point.isNewPoint;
     delete point.isThereDescription;
     delete point.isThereDescText;
     delete point.isThereDescPhotos;
