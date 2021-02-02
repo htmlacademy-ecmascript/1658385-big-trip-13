@@ -30,8 +30,27 @@ const tripEventsElement = pageBodyContainerElement.querySelector(`.trip-events`)
 
 const newEventButton = tripMainElement.querySelector(`.trip-main__event-add-btn`);
 
-const menuElement = new MenuView();
-render(menuContainerElement, menuElement);
+const renderMenu = (container) => {
+  const menuElement = new MenuView();
+  render(container, menuElement);
+
+  const handleMenuClick = (tab) => {
+    menuElement.setActiveTab(tab);
+    switch (tab) {
+      case TabType.TABLE:
+        remove(statsElement);
+        tripPresenter.init(newEventButton, destinationsModel, offersModel);
+        break;
+      case TabType.STATS:
+        tripPresenter.destroy();
+        statsElement = new StatsView(pointsModel.getPoints());
+        render(pageBodyContainerElement, statsElement);
+        break;
+    }
+  };
+
+  menuElement.setMenuClickHandler(handleMenuClick);
+};
 
 const pointsModel = new PointsModel();
 const destinationsModel = new DestinationsModel();
@@ -44,24 +63,6 @@ const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsEle
 
 let statsElement = null;
 
-const handleMenuClick = (tab) => {
-  menuElement.setActiveTab(tab);
-  switch (tab) {
-    case TabType.TABLE:
-      remove(statsElement);
-      tripPresenter.init(newEventButton, destinationsModel, offersModel);
-      break;
-    case TabType.STATS:
-      tripPresenter.destroy();
-      statsElement = new StatsView(pointsModel.getPoints());
-      render(pageBodyContainerElement, statsElement);
-      break;
-  }
-};
-
-menuElement.setMenuClickHandler(handleMenuClick);
-
-filtersPresenter.init();
 tripPresenter.init(newEventButton, destinationsModel, offersModel);
 
 api.getDestinations()
@@ -75,9 +76,15 @@ api.getDestinations()
   .then(() => api.getPoints())
   .then((points) => {
     pointsModel.setPoints(UpdateType.INIT, points);
+    renderMenu(menuContainerElement);
+    filtersPresenter.init();
+    newEventButton.disabled = false;
   })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);
+    renderMenu(menuContainerElement);
+    filtersPresenter.init();
+    newEventButton.disabled = false;
   });
 
 newEventButton.addEventListener(`click`, (evt) => {
