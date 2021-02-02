@@ -12,7 +12,7 @@ import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sor
 import NewPointPresenter from './new-point';
 
 export default class TripPresenter {
-  constructor(pointsModel, filtersModel, tripEventsElement, tripInfoElement, newEventButton) {
+  constructor(pointsModel, filtersModel, tripEventsElement, tripInfoElement) {
     this._pointsModel = pointsModel;
     this._filtersModel = filtersModel;
     this._tripEventsElement = tripEventsElement;
@@ -21,6 +21,9 @@ export default class TripPresenter {
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
     this._isLoading = true;
+    this._destinationsModel = null;
+    this._offersModel = null;
+    this._newPointPresenter = null;
 
     this._sortingElement = null;
     this._tripInfoMainElement = null;
@@ -32,15 +35,17 @@ export default class TripPresenter {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
-
-    this._newPointPresenter = new NewPointPresenter(this._pointsListElement, this._handleViewAction, newEventButton);
   }
 
-  init() {
+  init(newEventButton, destinationsModel, offersModel) {
     this._filtersModel.addObserver(this._handleModelEvent);
     this._pointsModel.addObserver(this._handleModelEvent);
     render(this._tripEventsElement, this._pointsListElement);
     this._renderPointsDependentElements();
+
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
+    this._newPointPresenter = new NewPointPresenter(this._pointsListElement, this._handleViewAction, newEventButton, destinationsModel, offersModel);
   }
 
   _renderPointsDependentElements() {
@@ -233,7 +238,7 @@ export default class TripPresenter {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointsListElement, this._handleViewAction, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._pointsListElement, this._handleViewAction, this._handleModeChange, this._destinationsModel, this._offersModel);
     pointPresenter.init(point);
     this._pointPresenter.set(point.id, pointPresenter);
   }

@@ -1,4 +1,3 @@
-import {OFFERS, TYPES, DESTINATIONS} from '../mock/point';
 import SmartView from './smart';
 import flatpickr from "flatpickr";
 import dayjs from 'dayjs';
@@ -8,7 +7,15 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 const BLANK_POINT = {
   type: `Taxi`,
   price: 20,
-  destination: `Amsterdam`,
+  destination: `Berlin`,
+  description: {
+    text: `Berlin, with a beautiful old town, middle-eastern paradise, for those who value comfort and coziness, full of of cozy canteens where you can try the best coffee in the Middle East.`,
+    photos: [
+      `http://picsum.photos/300/200?r=0.3522876714032004`,
+      `http://picsum.photos/300/200?r=0.4640348534308374`,
+      `http://picsum.photos/300/200?r=0.5946278713668902`
+    ]
+  },
   offers: [],
   times: {
     start: dayjs(),
@@ -16,6 +23,8 @@ const BLANK_POINT = {
   },
   isFavorite: false
 };
+
+const TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
 
 const createTypeChoiceTemplate = (chosenType) => {
   return `
@@ -64,7 +73,7 @@ const createPhotosTemplate = (photos) => {
   `;
 };
 
-const createEditPointTemplate = (data) => {
+const createEditPointTemplate = (data, destinations) => {
   const {isNewPoint, type, destination, times, price, pickedOffers, description, availableOffers, isThereAvailableOffers, isThereDescText, isThereDescPhotos, isThereDescription} = data;
   const typeChoiceTemplate = createTypeChoiceTemplate(type);
   const offersTemplate = isThereAvailableOffers ? createOffersTemplate(availableOffers, pickedOffers) : ``;
@@ -91,9 +100,9 @@ const createEditPointTemplate = (data) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination} list="destination-list-1" pattern="${DESTINATIONS.join(`|`)}" title="Available destinations: ${DESTINATIONS.join(`, `)}">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination} list="destination-list-1" pattern="${destinations.join(`|`)}" title="Available destinations: ${destinations.join(`, `)}">
             <datalist id="destination-list-1">
-              ${DESTINATIONS.map((destinationToChose) => `
+              ${destinations.map((destinationToChose) => `
                 <option value=${destinationToChose}></option>
               `).join(``)}
             </datalist>
@@ -139,11 +148,14 @@ const createEditPointTemplate = (data) => {
 };
 
 export default class EditPointView extends SmartView {
-  constructor(point = BLANK_POINT) {
+  constructor(destinationsList, offersList, getDescription, point = BLANK_POINT) {
     super();
 
-    this._data = EditPointView.parsePointToData(point);
+    this._data = EditPointView.parsePointToData(point, offersList);
     this._datepicker = null;
+    this._destinationsList = destinationsList;
+    this._offersList = offersList;
+    this._getDescription = getDescription;
 
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -159,7 +171,7 @@ export default class EditPointView extends SmartView {
   }
 
   getTemplate() {
-    return createEditPointTemplate(this._data);
+    return createEditPointTemplate(this._data, this._destinationsList);
   }
 
   restoreHandlers() {
@@ -173,7 +185,7 @@ export default class EditPointView extends SmartView {
 
   reset(point) {
     this.updateData(
-        EditPointView.parsePointToData(point)
+        EditPointView.parsePointToData(point, this._offersList)
     );
   }
 
@@ -250,7 +262,7 @@ export default class EditPointView extends SmartView {
   }
 
   _typeChoiceHandler(evt) {
-    const availableOffers = EditPointView.getAvailableOffers(evt.target.value);
+    const availableOffers = EditPointView.getAvailableOffers(evt.target.value, this._offersList);
     this.updateData({
       type: evt.target.value,
       availableOffers,
@@ -260,13 +272,16 @@ export default class EditPointView extends SmartView {
   }
 
   _destinationChoiceHandler(evt) {
-    if (DESTINATIONS.includes(evt.target.value)) {
+    if (this._destinationsList.includes(evt.target.value)) {
+      const destination = evt.target.value;
+      const description = this._getDescription(destination);
       this.updateData(
           Object.assign(
               {
-                destination: evt.target.value
+                destination,
+                description
               },
-              EditPointView.getDescFields(evt.target.value)
+              EditPointView.getDescFields(description)
           )
       );
     }
@@ -300,12 +315,12 @@ export default class EditPointView extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EditPointView.parseDataToPoint(this._data));
+    this._callback.formSubmit(EditPointView.parseDataToPoint(this._data, this._offersList));
   }
 
   _deleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.delete(EditPointView.parseDataToPoint(this._data));
+    this._callback.delete(EditPointView.parseDataToPoint(this._data, this._offersList));
   }
 
   setRollupButtonClickHandler(callback) {
@@ -333,13 +348,13 @@ export default class EditPointView extends SmartView {
     };
   }
 
-  static getAvailableOffers(type) {
-    return OFFERS.slice().filter((offer) => offer.type === type);
+  static getAvailableOffers(type, offersList) {
+    return offersList.slice().filter((offer) => offer.type === type);
   }
 
-  static parsePointToData(point) {
+  static parsePointToData(point, offersList) {
     const isNewPoint = typeof point.id === `undefined`;
-    const availableOffers = EditPointView.getAvailableOffers(point.type);
+    const availableOffers = EditPointView.getAvailableOffers(point.type, offersList);
     const pickedOffers = new Set(point.offers.map((offer) => offer.name));
     const isThereAvailableOffers = !!availableOffers.length;
     return Object.assign(
@@ -355,9 +370,9 @@ export default class EditPointView extends SmartView {
     );
   }
 
-  static parseDataToPoint(data) {
+  static parseDataToPoint(data, offersList) {
     const point = Object.assign({}, data);
-    point.offers = OFFERS.filter((offer) => data.pickedOffers.has(offer.name));
+    point.offers = offersList.filter((offer) => data.pickedOffers.has(offer.name));
     delete point.availableOffers;
     delete point.isThereAvailableOffers;
     delete point.isNewPoint;

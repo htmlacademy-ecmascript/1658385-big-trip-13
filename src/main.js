@@ -2,6 +2,8 @@ import FilterPresenter from './presenter/filters';
 import TripPresenter from './presenter/trip';
 import FiltersModel from './model/filters';
 import PointsModel from './model/points';
+import DestinationsModel from './model/destinations';
+import OffersModel from './model/offers';
 import MenuView from './view/menu';
 import StatsView from './view/stats';
 import {render, remove} from './utils/render';
@@ -33,6 +35,8 @@ const menuElement = new MenuView();
 render(menuContainerElement, menuElement);
 
 const pointsModel = new PointsModel();
+const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel();
 
 const filtersModel = new FiltersModel();
 const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement);
@@ -46,7 +50,7 @@ const handleMenuClick = (tab) => {
   switch (tab) {
     case TabType.TABLE:
       remove(statsElement);
-      tripPresenter.init();
+      tripPresenter.init(newEventButton, destinationsModel, offersModel);
       break;
     case TabType.STATS:
       tripPresenter.destroy();
@@ -59,9 +63,17 @@ const handleMenuClick = (tab) => {
 menuElement.setMenuClickHandler(handleMenuClick);
 
 filtersPresenter.init();
-tripPresenter.init();
+tripPresenter.init(newEventButton, destinationsModel, offersModel);
 
-api.getPoints()
+api.getDestinations()
+  .then((descriptions) => {
+    destinationsModel.descriptions = descriptions;
+  })
+  .then(() => api.getOffers())
+  .then((offers) => {
+    offersModel.offers = offers;
+  })
+  .then(() => api.getPoints())
   .then((points) => {
     pointsModel.setPoints(UpdateType.INIT, points);
   })
