@@ -100,10 +100,10 @@ const createEditPointTemplate = (data, destinations) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination} list="destination-list-1" pattern="${destinations.join(`|`)}" title="Available destinations: ${destinations.join(`, `)}" ${isDisabled ? `disabled` : ``}>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1" pattern="${destinations.join(`|`)}" title="Available destinations: ${destinations.join(`, `)}" ${isDisabled ? `disabled` : ``}>
             <datalist id="destination-list-1">
               ${destinations.map((destinationToChose) => `
-                <option value=${destinationToChose}></option>
+                <option value="${destinationToChose}"></option>
               `).join(``)}
             </datalist>
           </div>
