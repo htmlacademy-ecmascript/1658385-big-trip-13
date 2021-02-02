@@ -12,7 +12,8 @@ const Mode = {
 
 export const State = {
   SAVING: `SAVING`,
-  DELETING: `DELETING`
+  DELETING: `DELETING`,
+  SHAKING: `SHAKING`
 };
 
 export default class PointPresenter {
@@ -92,6 +93,17 @@ export default class PointPresenter {
           isDisabled: true,
           isDeleting: true
         });
+        break;
+      case State.SHAKING:
+        const resetFormState = () => {
+          this._editPointComponent.updateData({
+            isDisabled: false,
+            isSaving: false,
+            isDeleting: false
+          });
+        };
+        this._editPointComponent.shake(resetFormState);
+        this._pointComponent.shake(resetFormState);
         break;
     }
   }

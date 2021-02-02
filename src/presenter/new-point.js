@@ -54,6 +54,18 @@ export default class NewPointPresenter {
     });
   }
 
+  resetStateWithShake() {
+    const resetFormState = () => {
+      this._editPointComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._editPointComponent.shake(resetFormState);
+  }
+
   _handleFormSubmit(point) {
     this._changeData(
         ActionType.ADD,

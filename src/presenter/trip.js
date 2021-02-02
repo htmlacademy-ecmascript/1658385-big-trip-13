@@ -127,19 +127,30 @@ export default class TripPresenter {
         this._api.updatePoint(updatedPoint)
           .then((response) => {
             this._pointsModel.updatePoint(updateType, response);
+          })
+          .catch(() => {
+            this._pointPresenter.get(updatedPoint.id).setViewState(PointState.SHAKING);
           });
         break;
       case ActionType.DELETE:
         this._pointPresenter.get(updatedPoint.id).setViewState(PointState.DELETING);
-        this._api.deletePoint(updatedPoint).then(() => {
-          this._pointsModel.deletePoint(updateType, updatedPoint);
-        });
+        this._api.deletePoint(updatedPoint)
+          .then(() => {
+            this._pointsModel.deletePoint(updateType, updatedPoint);
+          })
+          .catch(() => {
+            this._pointPresenter.get(updatedPoint.id).setViewState(PointState.SHAKING);
+          });
         break;
       case ActionType.ADD:
         this._newPointPresenter.setIsSaving();
-        this._api.addPoint(updatedPoint).then((response) => {
-          this._pointsModel.addPoint(updateType, response);
-        });
+        this._api.addPoint(updatedPoint)
+          .then((response) => {
+            this._pointsModel.addPoint(updateType, response);
+          })
+          .catch(() => {
+            this._newPointPresenter.resetStateWithShake();
+          });
 
         break;
     }
