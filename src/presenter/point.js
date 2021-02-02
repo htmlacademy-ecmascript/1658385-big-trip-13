@@ -10,6 +10,12 @@ const Mode = {
   EDITING: `EDITING`
 };
 
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+  SHAKING: `SHAKING`
+};
+
 export default class PointPresenter {
   constructor(pointsListElement, changeData, changeMode, destinationsModel, offersModel) {
     this._pointsListElement = pointsListElement;
@@ -55,7 +61,8 @@ export default class PointPresenter {
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._editPointComponent, prevEditPointComponent);
+      replace(this._pointComponent, prevEditPointComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -70,6 +77,34 @@ export default class PointPresenter {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToPoint();
+    }
+  }
+
+  setViewState(state) {
+    switch (state) {
+      case State.SAVING:
+        this._editPointComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._editPointComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+      case State.SHAKING:
+        const resetFormState = () => {
+          this._editPointComponent.updateData({
+            isDisabled: false,
+            isSaving: false,
+            isDeleting: false
+          });
+        };
+        this._editPointComponent.shake(resetFormState);
+        this._pointComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -113,7 +148,6 @@ export default class PointPresenter {
   _handleFormSubmit(point) {
     const updateType = (point.price !== this._point.price || !isEqualTime(point.times.start, this._point.times.start || !isEqualTime(point.times.end, this._point.times.end)) || point.destination !== this._point.destination || !areOffersEqual(point.offers, this._point.offers)) ? UpdateType.MINOR : UpdateType.PATCH;
     this._changeData(ActionType.UPDATE, updateType, point);
-    this._replaceFormToPoint();
   }
 
   _handleDeletePoint(point) {

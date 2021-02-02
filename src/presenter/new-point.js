@@ -1,5 +1,4 @@
 import EditPointView from '../view/point-editor';
-import {generateId} from '../mock/point';
 import {render, RenderPosition, remove} from '../utils/render';
 import {UpdateType, ActionType} from '../const';
 import {handleEscape} from '../utils/common';
@@ -48,17 +47,31 @@ export default class NewPointPresenter {
     this._newEventButton.disabled = false;
   }
 
+  setIsSaving() {
+    this._editPointComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  resetStateWithShake() {
+    const resetFormState = () => {
+      this._editPointComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._editPointComponent.shake(resetFormState);
+  }
+
   _handleFormSubmit(point) {
     this._changeData(
         ActionType.ADD,
         UpdateType.MINOR,
-        Object.assign(
-            {id: generateId()},
-            point
-        )
+        point
     );
-
-    this.destroy();
   }
 
   _handleCancelClick() {

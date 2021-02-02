@@ -26,13 +26,13 @@ const BLANK_POINT = {
 
 const TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
 
-const createTypeChoiceTemplate = (chosenType) => {
+const createTypeChoiceTemplate = (chosenType, isDisabled) => {
   return `
     <fieldset class="event__type-group">
       <legend class="visually-hidden">Event type</legend>
         ${TYPES.map((type) => `
           <div class="event__type-item">
-            <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${type === chosenType ? `checked` : ``}>
+            <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${type === chosenType ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
             <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type}</label>
           </div>
       `).join(``)}
@@ -40,7 +40,7 @@ const createTypeChoiceTemplate = (chosenType) => {
   `;
 };
 
-const createOffersTemplate = (availableOffers, pickedOffers) => {
+const createOffersTemplate = (availableOffers, pickedOffers, isDisabled) => {
   return `
     <section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -48,7 +48,7 @@ const createOffersTemplate = (availableOffers, pickedOffers) => {
       <div class="event__available-offers">
         ${availableOffers.map((offer) => `
           <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.name.toLowerCase().split(` `).join(`-`)}-1" type="checkbox" name="event-offer" ${pickedOffers.has(offer.name) ? `checked` : ``} value="${offer.name}">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.name.toLowerCase().split(` `).join(`-`)}-1" type="checkbox" name="event-offer" ${pickedOffers.has(offer.name) ? `checked` : ``} value="${offer.name}" ${isDisabled ? `disabled` : ``}>
             <label class="event__offer-label" for="event-offer-${offer.name.toLowerCase().split(` `).join(`-`)}-1">
               <span class="event__offer-title">${offer.name}</span>
               &plus;&euro;&nbsp;
@@ -74,22 +74,22 @@ const createPhotosTemplate = (photos) => {
 };
 
 const createEditPointTemplate = (data, destinations) => {
-  const {isNewPoint, type, destination, times, price, pickedOffers, description, availableOffers, isThereAvailableOffers, isThereDescText, isThereDescPhotos, isThereDescription} = data;
-  const typeChoiceTemplate = createTypeChoiceTemplate(type);
-  const offersTemplate = isThereAvailableOffers ? createOffersTemplate(availableOffers, pickedOffers) : ``;
+  const {isNewPoint, type, destination, times, price, pickedOffers, description, availableOffers, isThereAvailableOffers, isThereDescText, isThereDescPhotos, isThereDescription, isDisabled, isSaving, isDeleting} = data;
+  const typeChoiceTemplate = createTypeChoiceTemplate(type, isDisabled);
+  const offersTemplate = isThereAvailableOffers ? createOffersTemplate(availableOffers, pickedOffers, isDisabled) : ``;
   const descTextTemplate = isThereDescText ? `<p class="event__destination-description">${description.text}</p>` : ``;
   const descPhotosTemplate = isThereDescPhotos ? createPhotosTemplate(description.photos) : ``;
 
   return `
     <li class="trip-events__item">
-      <form class="event event--edit" action="#" method="post">
+      <form class="event event--edit" action="#" method="post" ${isDisabled ? `disabled` : ``}>
         <header class="event__header">
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled` : ``}>
 
             <div class="event__type-list">
               ${typeChoiceTemplate}
@@ -100,20 +100,20 @@ const createEditPointTemplate = (data, destinations) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${destination} list="destination-list-1" pattern="${destinations.join(`|`)}" title="Available destinations: ${destinations.join(`, `)}">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1" pattern="${destinations.join(`|`)}" title="Available destinations: ${destinations.join(`, `)}" ${isDisabled ? `disabled` : ``}>
             <datalist id="destination-list-1">
               ${destinations.map((destinationToChose) => `
-                <option value=${destinationToChose}></option>
+                <option value="${destinationToChose}"></option>
               `).join(``)}
             </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${times.start.format(`DD/MM/YY HH:mm`)}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${times.start.format(`DD/MM/YY HH:mm`)}" ${isDisabled ? `disabled` : ``}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${times.end.format(`DD/MM/YY HH:mm`)}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${times.end.format(`DD/MM/YY HH:mm`)}" ${isDisabled ? `disabled` : ``}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -121,13 +121,13 @@ const createEditPointTemplate = (data, destinations) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input type="number" class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input type="number" class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}" ${isDisabled ? `disabled` : ``}>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
           ${isNewPoint
-    ? `<button class="event__reset-btn" type="reset">Cancel</button>`
-    : `<button class="event__reset-btn" type="reset">Delete</button>`}
+    ? `<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>Cancel</button>`
+    : `<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting` : `Delete`}</button>`}
           ${isNewPoint ? `` : `<button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>`}
@@ -364,7 +364,10 @@ export default class EditPointView extends SmartView {
           isNewPoint,
           availableOffers,
           isThereAvailableOffers,
-          pickedOffers
+          pickedOffers,
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false
         },
         EditPointView.getDescFields(point.description)
     );
@@ -380,6 +383,9 @@ export default class EditPointView extends SmartView {
     delete point.isThereDescText;
     delete point.isThereDescPhotos;
     delete point.pickedOffers;
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   }

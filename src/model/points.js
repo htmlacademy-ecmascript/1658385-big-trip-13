@@ -83,26 +83,26 @@ export default class PointsModel extends Observer {
 
   static adaptToServer(point) {
     return {
-      id: point.id,
-      type: point.type.toLowerCase(),
-      [`date_from`]: point.times.start.toISOString(),
-      [`date_to`]: point.times.end.toISOString(),
-      destination: {
-        name: point.destination,
-        description: point.description.text,
-        pictures: point.description.photos.map((photo) => {
+      'id': point.id,
+      'type': point.type.toLowerCase(),
+      'date_from': point.times.start.toISOString(),
+      'date_to': point.times.end.toISOString(),
+      'destination': {
+        'name': point.destination,
+        'description': point.description.text,
+        'pictures': point.description.photos.map((photo) => {
           return {
-            src: photo,
-            description: photo
+            'src': photo,
+            'description': photo
           };
         })
       },
-      [`base_price`]: point.price,
-      [`is_favorite`]: point.isFavorite,
-      offers: point.offers.map((offer) => {
+      'base_price': point.price,
+      'is_favorite': point.isFavorite,
+      'offers': point.offers.map((offer) => {
         return {
-          title: offer.name,
-          price: offer.price
+          'title': offer.name,
+          'price': offer.price
         };
       })
     };
