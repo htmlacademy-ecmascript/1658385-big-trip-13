@@ -72,7 +72,6 @@ Promise.all([
     destinationsModel.descriptions = descriptions;
     offersModel.offers = offers;
     pointsModel.setPoints(UpdateType.INIT, points);
-    pointsModel.setPoints(UpdateType.INIT, points);
     renderMenu(menuContainerElement);
     filtersPresenter.init();
     newEventButton.disabled = false;
