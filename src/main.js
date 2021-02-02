@@ -65,16 +65,13 @@ let statsElement = null;
 
 tripPresenter.init(newEventButton, destinationsModel, offersModel);
 
-api.getDestinations()
-  .then((descriptions) => {
+Promise.all([
+  api.getPoints(), api.getDestinations(), api.getOffers()
+])
+  .then(([points, descriptions, offers]) => {
     destinationsModel.descriptions = descriptions;
-  })
-  .then(() => api.getOffers())
-  .then((offers) => {
     offersModel.offers = offers;
-  })
-  .then(() => api.getPoints())
-  .then((points) => {
+    pointsModel.setPoints(UpdateType.INIT, points);
     pointsModel.setPoints(UpdateType.INIT, points);
     renderMenu(menuContainerElement);
     filtersPresenter.init();
