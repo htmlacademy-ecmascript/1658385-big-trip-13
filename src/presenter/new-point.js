@@ -5,10 +5,12 @@ import {UpdateType, ActionType} from '../const';
 import {handleEscape} from '../utils/common';
 
 export default class NewPointPresenter {
-  constructor(pointsListElement, changeData, newEventButton) {
+  constructor(pointsListElement, changeData, newEventButton, destinationsModel, offersModel) {
     this._pointsListElement = pointsListElement;
     this._changeData = changeData;
     this._newEventButton = newEventButton;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
 
     this._editPointComponent = null;
 
@@ -24,7 +26,7 @@ export default class NewPointPresenter {
 
     this._newEventButton.disabled = true;
 
-    this._editPointComponent = new EditPointView();
+    this._editPointComponent = new EditPointView(this._destinationsModel.destinations, this._offersModel.offers, this._destinationsModel.getDescription);
     this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._editPointComponent.setDeleteClickHandler(this._handleCancelClick);
 
