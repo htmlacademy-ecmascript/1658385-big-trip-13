@@ -1,5 +1,4 @@
 import EditPointView from '../view/point-editor';
-import {generateId} from '../mock/point';
 import {render, RenderPosition, remove} from '../utils/render';
 import {UpdateType, ActionType} from '../const';
 import {handleEscape} from '../utils/common';
@@ -52,10 +51,7 @@ export default class NewPointPresenter {
     this._changeData(
         ActionType.ADD,
         UpdateType.MINOR,
-        Object.assign(
-            {id: generateId()},
-            point
-        )
+        point
     );
 
     this.destroy();

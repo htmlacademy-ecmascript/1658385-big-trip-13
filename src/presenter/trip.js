@@ -129,10 +129,15 @@ export default class TripPresenter {
           });
         break;
       case ActionType.DELETE:
-        this._pointsModel.deletePoint(updateType, updatedPoint);
+        this._api.deletePoint(updatedPoint).then(() => {
+          this._pointsModel.deletePoint(updateType, updatedPoint);
+        });
         break;
       case ActionType.ADD:
-        this._pointsModel.addPoint(updateType, updatedPoint);
+        this._api.addPoint(updatedPoint).then((response) => {
+          this._pointsModel.addPoint(updateType, response);
+        });
+
         break;
     }
   }
