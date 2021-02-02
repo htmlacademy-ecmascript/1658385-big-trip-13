@@ -59,7 +59,7 @@ const offersModel = new OffersModel();
 const filtersModel = new FiltersModel();
 const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement);
 
-const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsElement, tripMainElement, newEventButton);
+const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsElement, tripMainElement, api);
 
 let statsElement = null;
 

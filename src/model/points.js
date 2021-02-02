@@ -92,7 +92,8 @@ export default class PointsModel extends Observer {
         description: point.description.text,
         pictures: point.description.photos.map((photo) => {
           return {
-            src: photo
+            src: photo,
+            description: photo
           };
         })
       },

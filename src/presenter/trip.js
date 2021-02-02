@@ -11,7 +11,7 @@ import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sor
 import NewPointPresenter from './new-point';
 
 export default class TripPresenter {
-  constructor(pointsModel, filtersModel, tripEventsElement, tripMainElement) {
+  constructor(pointsModel, filtersModel, tripEventsElement, tripMainElement, api) {
     this._pointsModel = pointsModel;
     this._filtersModel = filtersModel;
     this._tripEventsElement = tripEventsElement;
@@ -24,6 +24,7 @@ export default class TripPresenter {
     this._destinationsModel = null;
     this._offersModel = null;
     this._newPointPresenter = null;
+    this._api = api;
 
     this._sortingElement = null;
     this._tripInfoMainElement = null;
@@ -122,7 +123,10 @@ export default class TripPresenter {
   _handleViewAction(actionType, updateType, updatedPoint) {
     switch (actionType) {
       case ActionType.UPDATE:
-        this._pointsModel.updatePoint(updateType, updatedPoint);
+        this._api.updatePoint(updatedPoint)
+          .then((response) => {
+            this._pointsModel.updatePoint(updateType, response);
+          });
         break;
       case ActionType.DELETE:
         this._pointsModel.deletePoint(updateType, updatedPoint);
