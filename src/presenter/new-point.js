@@ -47,14 +47,19 @@ export default class NewPointPresenter {
     this._newEventButton.disabled = false;
   }
 
+  setIsSaving() {
+    this._editPointComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
   _handleFormSubmit(point) {
     this._changeData(
         ActionType.ADD,
         UpdateType.MINOR,
         point
     );
-
-    this.destroy();
   }
 
   _handleCancelClick() {

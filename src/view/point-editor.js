@@ -73,8 +73,8 @@ const createPhotosTemplate = (photos) => {
   `;
 };
 
-const createEditPointTemplate = (data, destinations, isDisabled, isSaving, isDeleting) => {
-  const {isNewPoint, type, destination, times, price, pickedOffers, description, availableOffers, isThereAvailableOffers, isThereDescText, isThereDescPhotos, isThereDescription} = data;
+const createEditPointTemplate = (data, destinations) => {
+  const {isNewPoint, type, destination, times, price, pickedOffers, description, availableOffers, isThereAvailableOffers, isThereDescText, isThereDescPhotos, isThereDescription, isDisabled, isSaving, isDeleting} = data;
   const typeChoiceTemplate = createTypeChoiceTemplate(type, isDisabled);
   const offersTemplate = isThereAvailableOffers ? createOffersTemplate(availableOffers, pickedOffers, isDisabled) : ``;
   const descTextTemplate = isThereDescText ? `<p class="event__destination-description">${description.text}</p>` : ``;
@@ -171,7 +171,7 @@ export default class EditPointView extends SmartView {
   }
 
   getTemplate() {
-    return createEditPointTemplate(this._data, this._destinationsList, true);
+    return createEditPointTemplate(this._data, this._destinationsList);
   }
 
   restoreHandlers() {

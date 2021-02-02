@@ -4,7 +4,7 @@ import TripInfoView from '../view/trip-info';
 import PointsListView from '../view/points-list';
 import LoadingView from '../view/loading';
 import NoPointsView from '../view/no-points';
-import PointPresenter from './point';
+import PointPresenter, {State as PointState} from './point';
 import {SortType, UpdateType, ActionType, FilterType} from '../const';
 import {filter} from '../utils/filter';
 import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sort';
@@ -123,17 +123,20 @@ export default class TripPresenter {
   _handleViewAction(actionType, updateType, updatedPoint) {
     switch (actionType) {
       case ActionType.UPDATE:
+        this._pointPresenter.get(updatedPoint.id).setViewState(PointState.SAVING);
         this._api.updatePoint(updatedPoint)
           .then((response) => {
             this._pointsModel.updatePoint(updateType, response);
           });
         break;
       case ActionType.DELETE:
+        this._pointPresenter.get(updatedPoint.id).setViewState(PointState.DELETING);
         this._api.deletePoint(updatedPoint).then(() => {
           this._pointsModel.deletePoint(updateType, updatedPoint);
         });
         break;
       case ActionType.ADD:
+        this._newPointPresenter.setIsSaving();
         this._api.addPoint(updatedPoint).then((response) => {
           this._pointsModel.addPoint(updateType, response);
         });
