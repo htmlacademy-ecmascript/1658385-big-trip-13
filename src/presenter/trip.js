@@ -1,7 +1,6 @@
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import SortingView from '../view/sorting';
-import TripInfoCostView from '../view/trip-info-cost';
-import TripInfoMainView from '../view/trip-info-main';
+import TripInfoView from '../view/trip-info';
 import PointsListView from '../view/points-list';
 import LoadingView from '../view/loading';
 import NoPointsView from '../view/no-points';
@@ -12,12 +11,13 @@ import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sor
 import NewPointPresenter from './new-point';
 
 export default class TripPresenter {
-  constructor(pointsModel, filtersModel, tripEventsElement, tripInfoElement) {
+  constructor(pointsModel, filtersModel, tripEventsElement, tripMainElement) {
     this._pointsModel = pointsModel;
     this._filtersModel = filtersModel;
     this._tripEventsElement = tripEventsElement;
     this._pointsListElement = new PointsListView();
-    this._tripInfoElement = tripInfoElement;
+    this._tripMainElement = tripMainElement;
+    this._tripInfoElement = null;
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DAY;
     this._isLoading = true;
@@ -176,29 +176,19 @@ export default class TripPresenter {
   }
 
   _renderTripInfo() {
-    const prevTripInfoMainElement = this._tripInfoMainElement;
+    const prevTripInfoElement = this._tripInfoElement;
 
     const points = this._getPoints();
     const route = TripPresenter.getTripRoute(points);
     const dates = TripPresenter.getTripDates(points);
-    this._tripInfoMainElement = new TripInfoMainView(route, dates);
-
-    if (prevTripInfoMainElement === null) {
-      render(this._tripInfoElement, this._tripInfoMainElement);
-    } else {
-      replace(this._tripInfoMainElement, prevTripInfoMainElement);
-      remove(prevTripInfoMainElement);
-    }
-
-    const prevTripInfoCostElement = this._tripInfoCostElement;
-
     const cost = TripPresenter.calcTripCost(points);
-    this._tripInfoCostElement = new TripInfoCostView(cost);
-    if (prevTripInfoCostElement === null) {
-      render(this._tripInfoElement, this._tripInfoCostElement);
+    this._tripInfoElement = new TripInfoView(route, dates, cost);
+
+    if (prevTripInfoElement === null) {
+      render(this._tripMainElement, this._tripInfoElement, RenderPosition.AFTERBEGIN);
     } else {
-      replace(this._tripInfoCostElement, prevTripInfoCostElement);
-      remove(prevTripInfoCostElement);
+      replace(this._tripInfoElement, prevTripInfoElement);
+      remove(prevTripInfoElement);
     }
   }
 
@@ -252,13 +242,17 @@ export default class TripPresenter {
   _clearPointsList() {
     this._newPointPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
+
     remove(this._loadingElement);
     this._pointPresenter = new Map();
   }
 
   destroy() {
-    remove(this._sortingElement);
-    this._sortingElement = null;
+    if (this._sortingElement !== null) {
+      remove(this._sortingElement);
+      this._sortingElement = null;
+    }
+
     this._currentSortType = SortType.DAY;
 
     this._clearPointsList();

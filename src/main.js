@@ -21,7 +21,6 @@ const pageMainElement = pageBodyElement.querySelector(`.page-main`);
 const pageBodyContainerElement = pageMainElement.querySelector(`.page-body__container`);
 
 const tripMainElement = pageHeaderElement.querySelector(`.trip-main`);
-const tripInfoElement = tripMainElement.querySelector(`.trip-info`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 
 const menuContainerElement = tripControlsElement.querySelector(`.menu-container`);
@@ -41,7 +40,7 @@ const offersModel = new OffersModel();
 const filtersModel = new FiltersModel();
 const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement);
 
-const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsElement, tripInfoElement, newEventButton);
+const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsElement, tripMainElement, newEventButton);
 
 let statsElement = null;
 
