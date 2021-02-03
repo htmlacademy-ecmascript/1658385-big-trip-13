@@ -142,7 +142,9 @@ export default class PointPresenter {
             {
               isFavorite: !this._point.isFavorite
             }
-        ));
+        ),
+        true
+    );
   }
 
   _handleFormSubmit(point) {

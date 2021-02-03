@@ -120,10 +120,12 @@ export default class TripPresenter {
     this._pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  _handleViewAction(actionType, updateType, updatedPoint) {
+  _handleViewAction(actionType, updateType, updatedPoint, withoutSavingState = false) {
     switch (actionType) {
       case ActionType.UPDATE:
-        this._pointPresenter.get(updatedPoint.id).setViewState(PointState.SAVING);
+        if (!withoutSavingState) {
+          this._pointPresenter.get(updatedPoint.id).setViewState(PointState.SAVING);
+        }
         this._api.updatePoint(updatedPoint)
           .then((response) => {
             this._pointsModel.updatePoint(updateType, response);
