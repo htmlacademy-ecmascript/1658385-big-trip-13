@@ -18,7 +18,6 @@ export default class DestinationsModel {
   }
 
   static adaptToClient(descriptions) {
-    console.log(`descriptions to adapt`, descriptions);
     const adaptedDescriptions = new Map();
     descriptions.forEach((description) => {
       adaptedDescriptions.set(
@@ -29,7 +28,6 @@ export default class DestinationsModel {
           }
       );
     });
-    console.log(`adaptedDescriptions`, adaptedDescriptions);
     return adaptedDescriptions;
   }
 }
