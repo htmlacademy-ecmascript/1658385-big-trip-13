@@ -147,11 +147,11 @@ const createEditPointTemplate = (data, destinations) => {
   `;
 };
 
-export default class EditPointView extends SmartView {
+export default class PointEditorView extends SmartView {
   constructor(destinationsList, offersList, getDescription, point = BLANK_POINT) {
     super();
 
-    this._data = EditPointView.parsePointToData(point, offersList);
+    this._data = PointEditorView.parsePointToData(point, offersList);
     this._datepicker = null;
     this._destinationsList = destinationsList;
     this._offersList = offersList;
@@ -185,7 +185,7 @@ export default class EditPointView extends SmartView {
 
   reset(point) {
     this.updateData(
-        EditPointView.parsePointToData(point, this._offersList)
+        PointEditorView.parsePointToData(point, this._offersList)
     );
   }
 
@@ -197,6 +197,21 @@ export default class EditPointView extends SmartView {
       this._datepicker.end.destroy();
       this._datepicker = null;
     }
+  }
+
+  setRollupButtonClickHandler(callback) {
+    this._callback.rollupButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.delete = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._deleteClickHandler);
   }
 
   _setDatepickers() {
@@ -265,7 +280,7 @@ export default class EditPointView extends SmartView {
   }
 
   _typeChoiceHandler(evt) {
-    const availableOffers = EditPointView.getAvailableOffers(evt.target.value, this._offersList);
+    const availableOffers = PointEditorView.getAvailableOffers(evt.target.value, this._offersList);
     this.updateData({
       type: evt.target.value,
       availableOffers,
@@ -284,7 +299,7 @@ export default class EditPointView extends SmartView {
                 destination,
                 description
               },
-              EditPointView.getDescFields(description)
+              PointEditorView.getDescFields(description)
           )
       );
     }
@@ -318,27 +333,12 @@ export default class EditPointView extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EditPointView.parseDataToPoint(this._data, this._offersList));
+    this._callback.formSubmit(PointEditorView.parseDataToPoint(this._data, this._offersList));
   }
 
   _deleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.delete(EditPointView.parseDataToPoint(this._data, this._offersList));
-  }
-
-  setRollupButtonClickHandler(callback) {
-    this._callback.rollupButtonClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupButtonClickHandler);
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
-  }
-
-  setDeleteClickHandler(callback) {
-    this._callback.delete = callback;
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._deleteClickHandler);
+    this._callback.delete(PointEditorView.parseDataToPoint(this._data, this._offersList));
   }
 
   static getDescFields(description) {
@@ -357,7 +357,7 @@ export default class EditPointView extends SmartView {
 
   static parsePointToData(point, offersList) {
     const isNewPoint = typeof point.id === `undefined`;
-    const availableOffers = EditPointView.getAvailableOffers(point.type, offersList);
+    const availableOffers = PointEditorView.getAvailableOffers(point.type, offersList);
     const pickedOffers = new Set(point.offers.map((offer) => offer.name));
     const isThereAvailableOffers = !!availableOffers.length;
     return Object.assign(
@@ -372,7 +372,7 @@ export default class EditPointView extends SmartView {
           isSaving: false,
           isDeleting: false
         },
-        EditPointView.getDescFields(point.description)
+        PointEditorView.getDescFields(point.description)
     );
   }
 

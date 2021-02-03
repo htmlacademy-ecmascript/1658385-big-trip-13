@@ -10,6 +10,8 @@ import {filter} from '../utils/filter';
 import {sortPointsByTime, sortPointsByPrice, sortPointsByDay} from '../utils/sort';
 import NewPointPresenter from './new-point';
 
+const MAX_FULL_ROUTE_DISPLAY_POINTS_AMOUNT = 3;
+
 export default class TripPresenter {
   constructor(pointsModel, filtersModel, tripEventsElement, tripMainElement, api) {
     this._pointsModel = pointsModel;
@@ -49,6 +51,26 @@ export default class TripPresenter {
     this._newPointPresenter = new NewPointPresenter(this._pointsListElement, this._handleViewAction, newEventButton, destinationsModel, offersModel);
   }
 
+  createPoint() {
+    this._filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._newPointPresenter.init();
+  }
+
+  destroy() {
+    if (this._sortingElement !== null) {
+      remove(this._sortingElement);
+      this._sortingElement = null;
+    }
+
+    this._currentSortType = SortType.DAY;
+
+    this._clearPointsList();
+    remove(this._pointsListElement);
+
+    this._filtersModel.removeObserver(this._handleModelEvent);
+    this._pointsModel.removeObserver(this._handleModelEvent);
+  }
+
   _renderPointsDependentElements() {
     if (this._isLoading) {
       this._renderLoading();
@@ -82,11 +104,6 @@ export default class TripPresenter {
     }
 
     return filteredPoints;
-  }
-
-  createPoint() {
-    this._filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._newPointPresenter.init();
   }
 
   _handleModelEvent(updateType, data) {
@@ -156,48 +173,6 @@ export default class TripPresenter {
 
         break;
     }
-  }
-
-  static getTripRoute(points) {
-    let destinations = [];
-    points.forEach((point) => {
-      const lastDestination = destinations.slice(-1)[0];
-      if (point.destination !== lastDestination) {
-        destinations.push(point.destination);
-      }
-    });
-
-    if (destinations.length > 3) {
-      destinations = [destinations[0], `...`, destinations.pop()];
-    }
-
-    return destinations.join(` &mdash; `);
-  }
-
-  static getTripDates(points) {
-    if (!points.length) {
-      return ``;
-    }
-
-    let {start, end} = points[0].times;
-    points.forEach((point) => {
-      if (point.times.start.diff(start) < 0) {
-        start = point.times.start;
-      }
-      if (point.times.end.diff(end) > 0) {
-        end = point.times.end;
-      }
-    });
-
-    return start.month() === end.month()
-      ? `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.date()}`
-      : `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.format(`MMM D`).toUpperCase()}`;
-  }
-
-  static calcTripCost(points) {
-    return points.reduce((sum, point) => {
-      return sum + point.price + point.offers.reduce((oSum, offer) => oSum + offer.price, 0);
-    }, 0);
   }
 
   _renderTripInfo() {
@@ -272,18 +247,45 @@ export default class TripPresenter {
     this._pointPresenter = new Map();
   }
 
-  destroy() {
-    if (this._sortingElement !== null) {
-      remove(this._sortingElement);
-      this._sortingElement = null;
+  static getTripRoute(points) {
+    let destinations = [];
+    points.forEach((point) => {
+      const lastDestination = destinations.slice(-1)[0];
+      if (point.destination !== lastDestination) {
+        destinations.push(point.destination);
+      }
+    });
+
+    if (destinations.length > MAX_FULL_ROUTE_DISPLAY_POINTS_AMOUNT) {
+      destinations = [destinations[0], `...`, destinations.pop()];
     }
 
-    this._currentSortType = SortType.DAY;
+    return destinations.join(` &mdash; `);
+  }
 
-    this._clearPointsList();
-    remove(this._pointsListElement);
+  static getTripDates(points) {
+    if (!points.length) {
+      return ``;
+    }
 
-    this._filtersModel.removeObserver(this._handleModelEvent);
-    this._pointsModel.removeObserver(this._handleModelEvent);
+    let {start, end} = points[0].times;
+    points.forEach((point) => {
+      if (point.times.start.diff(start) < 0) {
+        start = point.times.start;
+      }
+      if (point.times.end.diff(end) > 0) {
+        end = point.times.end;
+      }
+    });
+
+    return start.month() === end.month()
+      ? `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.date()}`
+      : `${start.format(`MMM D`).toUpperCase()}&nbsp;&mdash;&nbsp;${end.format(`MMM D`).toUpperCase()}`;
+  }
+
+  static calcTripCost(points) {
+    return points.reduce((sum, point) => {
+      return sum + point.price + point.offers.reduce((oSum, offer) => oSum + offer.price, 0);
+    }, 0);
   }
 }

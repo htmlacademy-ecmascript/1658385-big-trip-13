@@ -37,6 +37,8 @@ const tripEventsElement = pageBodyContainerElement.querySelector(`.trip-events`)
 
 const newEventButton = tripMainElement.querySelector(`.trip-main__event-add-btn`);
 
+let statsElement = null;
+
 const renderMenu = (container) => {
   const menuElement = new MenuView();
   render(container, menuElement);
@@ -68,8 +70,6 @@ const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsEle
 
 const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement, pointsModel);
 
-let statsElement = null;
-
 tripPresenter.init(newEventButton, destinationsModel, offersModel);
 
 Promise.all([
@@ -79,12 +79,11 @@ Promise.all([
     destinationsModel.descriptions = descriptions;
     offersModel.offers = offers;
     pointsModel.setPoints(UpdateType.INIT, points);
-    renderMenu(menuContainerElement);
-    filtersPresenter.init();
-    newEventButton.disabled = false;
   })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);
+  })
+  .finally(() => {
     renderMenu(menuContainerElement);
     filtersPresenter.init();
     newEventButton.disabled = false;

@@ -29,6 +29,6 @@ export const humanizeDuration = (milliseconds) => {
   return humanDuration;
 };
 
-export const isEqualTime = (dateA, dateB) => {
+export const compareTimes = (dateA, dateB) => {
   return dayjs(dateA).isSame(dateB, `m`);
 };
