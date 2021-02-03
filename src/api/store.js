@@ -4,10 +4,6 @@ export default class Store {
     this._storeKeyPrefix = key;
   }
 
-  _getStoreKey(key) {
-    return `${this._storeKeyPrefix}-${key}`;
-  }
-
   getItems(storeKey) {
     const key = this._getStoreKey(storeKey);
     try {
@@ -46,5 +42,9 @@ export default class Store {
         this._getStoreKey(storeKey),
         JSON.stringify(items)
     );
+  }
+
+  _getStoreKey(key) {
+    return `${this._storeKeyPrefix}-${key}`;
   }
 }

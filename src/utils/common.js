@@ -2,7 +2,7 @@ export const updatePoint = (points, updatedPoint) => {
   return points.map((point) => point.id === updatedPoint.id ? updatedPoint : point);
 };
 
-export const areOffersEqual = (offersA, offersB) => {
+export const compareOffers = (offersA, offersB) => {
   return JSON.stringify(offersA.map((offer) => offer.name).sort()) === JSON.stringify(offersB.map((offer) => offer.name).sort());
 };
 

@@ -1,10 +1,18 @@
 import {render, replace, remove} from '../utils/render';
+import {filter} from '../utils/filter';
 import FiltersView from '../view/filters';
 import {UpdateType} from '../const';
 
+const FILTERS = [
+  `everything`,
+  `future`,
+  `past`
+];
+
 export default class FiltersPresenter {
-  constructor(filtersModel, filtersContainerElement) {
+  constructor(filtersModel, filtersContainerElement, pointsModel) {
     this._filtersModel = filtersModel;
+    this._pointsModel = pointsModel;
     this._filtersElement = null;
     this._filtersContainerElement = filtersContainerElement;
     this._currentFilter = null;
@@ -13,6 +21,7 @@ export default class FiltersPresenter {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._filtersModel.addObserver(this._handleModelEvent);
+    this._pointsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -20,7 +29,7 @@ export default class FiltersPresenter {
 
     const prevFiltersElement = this._filtersElement;
 
-    this._filtersElement = new FiltersView(this._getFilters(), this._currentFilter);
+    this._filtersElement = new FiltersView(this._getFilters(), this._getDisabledFilters(), this._currentFilter);
     this._filtersElement.setFilterChangeHandler(this._handleFilterChange);
 
     if (prevFiltersElement === null) {
@@ -45,10 +54,10 @@ export default class FiltersPresenter {
   }
 
   _getFilters() {
-    return [
-      `everything`,
-      `future`,
-      `past`
-    ];
+    return FILTERS;
+  }
+
+  _getDisabledFilters() {
+    return FILTERS.filter((filterName) => filter[filterName](this._pointsModel.getPoints()).length === 0);
   }
 }

@@ -23,12 +23,12 @@ export default class Provider {
     this._isNotSynced = false;
   }
 
-  _isOnline() {
-    return window.navigator.onLine;
+  getIsNotSynced() {
+    return this._isNotSynced;
   }
 
   getPoints() {
-    if (this._isOnline()) {
+    if (this._getIsOnline()) {
       return this._api.getPoints()
         .then((points) => {
           const items = createStoreStructure(points.map(PointsModel.adaptToServer));
@@ -43,7 +43,7 @@ export default class Provider {
   }
 
   getDestinations() {
-    if (this._isOnline()) {
+    if (this._getIsOnline()) {
       return this._api.getDestinations()
         .then((destinations) => {
           this._store.setItems(STORE_KEYS.DESTINATIONS, destinations);
@@ -56,7 +56,7 @@ export default class Provider {
   }
 
   getOffers() {
-    if (this._isOnline()) {
+    if (this._getIsOnline()) {
       return this._api.getOffers()
         .then((offers) => {
           this._store.setItems(STORE_KEYS.OFFERS, offers);
@@ -70,7 +70,7 @@ export default class Provider {
   }
 
   updatePoint(point) {
-    if (this._isOnline()) {
+    if (this._getIsOnline()) {
       return this._api.updatePoint(point)
         .then((updatedPoint) => {
           this._store.setItem(STORE_KEYS.POINTS, updatedPoint.id, PointsModel.adaptToServer(updatedPoint));
@@ -85,7 +85,7 @@ export default class Provider {
   }
 
   addPoint(point) {
-    if (this._isOnline()) {
+    if (this._getIsOnline()) {
       return this._api.addPoint(point)
         .then((newPoint) => {
           this._store.setItem(STORE_KEYS.POINTS, newPoint.id, PointsModel.adaptToServer(newPoint));
@@ -100,7 +100,7 @@ export default class Provider {
   }
 
   deletePoint(point) {
-    if (this._isOnline()) {
+    if (this._getIsOnline()) {
       return this._api.deletePoint(point)
         .then(() => this._store.removeItem(STORE_KEYS.POINTS, point.id));
     }
@@ -111,7 +111,7 @@ export default class Provider {
   }
 
   sync() {
-    if (this._isOnline()) {
+    if (this._getIsOnline()) {
       this._isNotSynced = false;
       const storePoints = Object.values(this._store.getItems(STORE_KEYS.POINTS));
       return this._api.sync(storePoints)
@@ -128,7 +128,7 @@ export default class Provider {
     return Promise.reject(new Error(`Sync data failed`));
   }
 
-  getIsNotSynced() {
-    return this._isNotSynced;
+  _getIsOnline() {
+    return window.navigator.onLine;
   }
 }

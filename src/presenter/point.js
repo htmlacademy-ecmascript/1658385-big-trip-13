@@ -1,9 +1,9 @@
 import {render, replace, remove} from '../utils/render';
 import PointView from '../view/point';
-import EditPointView from '../view/point-editor';
+import PointEditorView from '../view/point-editor';
 import {UpdateType, ActionType} from '../const';
-import {isEqualTime} from '../utils/time';
-import {areOffersEqual, handleEscape} from '../utils/common';
+import {compareTimes} from '../utils/time';
+import {compareOffers, handleEscape} from '../utils/common';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -28,7 +28,7 @@ export default class PointPresenter {
     this._editPointComponent = null;
     this._mode = Mode.DEFAULT;
 
-    this._keyDownHandler = this._keyDownHandler.bind(this);
+    this._handleKeyDown = this._handleKeyDown.bind(this);
     this._handleFormRollupButtonClick = this._handleFormRollupButtonClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handlePointRollupButtonClick = this._handlePointRollupButtonClick.bind(this);
@@ -43,7 +43,7 @@ export default class PointPresenter {
     const prevEditPointComponent = this._editPointComponent;
 
     this._pointComponent = new PointView(point);
-    this._editPointComponent = new EditPointView(this._destinationsModel.destinations, this._offersModel.offers, this._destinationsModel.getDescription, point);
+    this._editPointComponent = new PointEditorView(this._destinationsModel.destinations, this._offersModel.offers, this._destinationsModel.getDescription, point);
 
     this._pointComponent.setRollupButtonClickHandler(this._handleFormRollupButtonClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
@@ -115,12 +115,12 @@ export default class PointPresenter {
   }
 
   _replaceFormToPoint() {
-    document.removeEventListener(`keydown`, this._keyDownHandler);
+    document.removeEventListener(`keydown`, this._handleKeyDown);
     replace(this._pointComponent, this._editPointComponent);
     this._mode = Mode.DEFAULT;
   }
 
-  _keyDownHandler(evt) {
+  _handleKeyDown(evt) {
     handleEscape(evt, () => {
       this._editPointComponent.reset(this._point);
       this._replaceFormToPoint();
@@ -128,7 +128,7 @@ export default class PointPresenter {
   }
 
   _handleFormRollupButtonClick() {
-    document.addEventListener(`keydown`, this._keyDownHandler);
+    document.addEventListener(`keydown`, this._handleKeyDown);
     this._replacePointToForm();
   }
 
@@ -142,11 +142,13 @@ export default class PointPresenter {
             {
               isFavorite: !this._point.isFavorite
             }
-        ));
+        ),
+        true
+    );
   }
 
   _handleFormSubmit(point) {
-    const updateType = (point.price !== this._point.price || !isEqualTime(point.times.start, this._point.times.start || !isEqualTime(point.times.end, this._point.times.end)) || point.destination !== this._point.destination || !areOffersEqual(point.offers, this._point.offers)) ? UpdateType.MINOR : UpdateType.PATCH;
+    const updateType = (point.price !== this._point.price || !compareTimes(point.times.start, this._point.times.start || !compareTimes(point.times.end, this._point.times.end)) || point.destination !== this._point.destination || !compareOffers(point.offers, this._point.offers)) ? UpdateType.MINOR : UpdateType.PATCH;
     this._changeData(ActionType.UPDATE, updateType, point);
   }
 

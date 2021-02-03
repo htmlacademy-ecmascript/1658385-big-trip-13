@@ -1,4 +1,4 @@
-import EditPointView from '../view/point-editor';
+import PointEditorView from '../view/point-editor';
 import {render, RenderPosition, remove} from '../utils/render';
 import {UpdateType, ActionType} from '../const';
 import {handleEscape} from '../utils/common';
@@ -15,7 +15,7 @@ export default class NewPointPresenter {
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleCancelClick = this._handleCancelClick.bind(this);
-    this._keyDownHandler = this._keyDownHandler.bind(this);
+    this._handleKeyDown = this._handleKeyDown.bind(this);
   }
 
   init() {
@@ -25,13 +25,13 @@ export default class NewPointPresenter {
 
     this._newEventButton.disabled = true;
 
-    this._editPointComponent = new EditPointView(this._destinationsModel.destinations, this._offersModel.offers, this._destinationsModel.getDescription);
+    this._editPointComponent = new PointEditorView(this._destinationsModel.destinations, this._offersModel.offers, this._destinationsModel.getDescription);
     this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._editPointComponent.setDeleteClickHandler(this._handleCancelClick);
 
     render(this._pointsListElement, this._editPointComponent, RenderPosition.AFTERBEGIN);
 
-    document.addEventListener(`keydown`, this._keyDownHandler);
+    document.addEventListener(`keydown`, this._handleKeyDown);
   }
 
   destroy() {
@@ -42,7 +42,7 @@ export default class NewPointPresenter {
     remove(this._editPointComponent);
     this._editPointComponent = null;
 
-    document.removeEventListener(`keydown`, this._keyDownHandler);
+    document.removeEventListener(`keydown`, this._handleKeyDown);
 
     this._newEventButton.disabled = false;
   }
@@ -78,7 +78,7 @@ export default class NewPointPresenter {
     this.destroy();
   }
 
-  _keyDownHandler(evt) {
+  _handleKeyDown(evt) {
     handleEscape(evt, () => {
       this.destroy();
     });
