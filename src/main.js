@@ -62,11 +62,11 @@ const renderMenu = (container) => {
 const pointsModel = new PointsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
-
 const filtersModel = new FiltersModel();
-const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement);
 
 const tripPresenter = new TripPresenter(pointsModel, filtersModel, tripEventsElement, tripMainElement, api);
+
+const filtersPresenter = new FilterPresenter(filtersModel, filtersContainerElement, pointsModel);
 
 let statsElement = null;
 
