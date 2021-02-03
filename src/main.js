@@ -8,12 +8,19 @@ import MenuView from './view/menu';
 import StatsView from './view/stats';
 import {render, remove} from './utils/render';
 import {TabType, UpdateType} from './const';
-import Api from './api';
+import Api from './api/api';
+import Store from "./api/store.js";
+import Provider from "./api/provider.js";
 
-const AUTHORIZATION = `Basic lds3o1r4asd13kd`;
+const AUTHORIZATION_KEY = `oitmgq301f`;
+const AUTHORIZATION = `Basic ${AUTHORIZATION_KEY}`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
+const STORE_NAME = `big-trip-storage`;
+const STORE_PREFIX = `${STORE_NAME}-${AUTHORIZATION_KEY}`;
 
-const api = new Api(END_POINT, AUTHORIZATION);
+const baseApi = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_PREFIX, window.localStorage);
+const api = new Provider(baseApi, store);
 
 const pageBodyElement = document.querySelector(`.page-body`);
 const pageHeaderElement = pageBodyElement.querySelector(`.page-header`);
@@ -86,4 +93,20 @@ Promise.all([
 newEventButton.addEventListener(`click`, (evt) => {
   evt.preventDefault();
   tripPresenter.createPoint();
+});
+
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  if (api.getIsNotSynced()) {
+    api.sync();
+  }
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
 });

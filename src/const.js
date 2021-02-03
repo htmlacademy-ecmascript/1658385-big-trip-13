@@ -29,3 +29,9 @@ export const TabType = {
 };
 
 export const BAR_HEIGHT = 55;
+
+export const STORE_KEYS = {
+  POINTS: `points`,
+  DESTINATIONS: `destinations`,
+  OFFERS: `offers`
+};
