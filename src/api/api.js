@@ -1,6 +1,6 @@
-import PointsModel from './model/points';
-import DestinationModel from './model/destinations';
-import OffersModel from './model/offers';
+import PointsModel from '../model/points';
+import DestinationModel from '../model/destinations';
+import OffersModel from '../model/offers';
 
 const Method = {
   GET: `GET`,

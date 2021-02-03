@@ -8,7 +8,7 @@ import MenuView from './view/menu';
 import StatsView from './view/stats';
 import {render, remove} from './utils/render';
 import {TabType, UpdateType} from './const';
-import Api from './api';
+import Api from './api/api';
 
 const AUTHORIZATION = `Basic lds3o1r4asd13kd`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
