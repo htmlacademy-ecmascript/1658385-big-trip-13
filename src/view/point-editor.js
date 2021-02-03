@@ -231,12 +231,15 @@ export default class EditPointView extends SmartView {
 
   _dateChangeHandler(isStart) {
     return ([userDate]) => {
-      this.updateData({
-        times: {
-          start: isStart ? dayjs(userDate) : this._data.times.start,
-          end: isStart ? this._data.times.end : dayjs(userDate)
-        }
-      });
+      this.updateData(
+          {
+            times: {
+              start: isStart ? dayjs(userDate) : this._data.times.start,
+              end: isStart ? this._data.times.end : dayjs(userDate)
+            }
+          },
+          true
+      );
     };
   }
 
