@@ -201,7 +201,7 @@ export default class TripPresenter {
   _renderTripInfo() {
     const prevTripInfoElement = this._tripInfoElement;
 
-    const points = this._getPoints();
+    const points = this._pointsModel.getPoints().sort(sortPointsByDay);
     const route = TripPresenter.getTripRoute(points);
     const dates = TripPresenter.getTripDates(points);
     const cost = TripPresenter.calcTripCost(points);
